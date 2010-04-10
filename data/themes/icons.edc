@@ -1,0 +1,61 @@
+
+#define STOCK_ICON(icon_file, icon_name)            \
+images {                                            \
+   image: icon_file LOSSY 80;                       \
+}                                                   \
+group {                                             \
+   name: icon_name;                                 \
+    parts {                                         \
+        part { name: "icon";                        \
+            description { state: "default" 0.0;     \
+            image.normal: icon_file;                \
+            }                                       \
+        }                                           \
+    }                                               \
+}                                                   \
+
+#define STOCK_ICON_RATIO(icon_file, icon_name, r)                       \
+   images {                                                             \
+      image: icon_file LOSSY 80;                                        \
+   }                                                                    \
+   group {                                                              \
+      name: icon_name;                                                  \
+      parts {                                                           \
+         part { name: "icon";                                           \
+            description { state: "default" 0.0;                         \
+               aspect: r r;                                             \
+               aspect_preference: NONE;                                 \
+               align: 0.5 0.5;                                          \
+               image.normal: icon_file;                                 \
+            }                                                           \
+         }                                                              \
+      }                                                                 \
+   }
+
+STOCK_ICON("bg_music.jpg",                    "icon/cover");
+
+
+STOCK_ICON("mp_forward.png",                    "icon/mp_forward");
+STOCK_ICON("mp_next.png",                       "icon/mp_next");
+STOCK_ICON("mp_play.png",                       "icon/mp_play");
+STOCK_ICON("mp_prev.png",                       "icon/mp_prev");
+STOCK_ICON("mp_rewind.png",                     "icon/mp_rewind");
+STOCK_ICON("mp_stop.png",                       "icon/mp_stop");
+STOCK_ICON("mp_pause.png",                       "icon/mp_pause");
+
+STOCK_ICON("ic_mp_current_playlist_btn.png",                 "icon/mp_playlist");
+
+STOCK_ICON("ic_mp_repeat_all_btn.png",                       "icon/mp_repeat_all");
+STOCK_ICON("ic_mp_repeat_off_btn.png",                       "icon/mp_repeat_off");
+STOCK_ICON("ic_mp_repeat_once_btn.png",                       "icon/mp_repeat_once");
+
+STOCK_ICON("ic_mp_shuffle_on_btn.png",                       "icon/mp_shuffle_on");
+STOCK_ICON("ic_mp_shuffle_off_btn.png",                       "icon/mp_shuffle_off");
+
+STOCK_ICON("icon_album.png",                       "icon/album");
+STOCK_ICON("icon_artist.png",                       "icon/artist");
+STOCK_ICON("icon_music.png",                       "icon/title");
+
+STOCK_ICON("dev_cdda2.png",                       "icon/music");
+STOCK_ICON("dev_ipod.png",                       "icon/playing");
+

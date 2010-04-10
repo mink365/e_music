@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=E-music
+GenericName=Xmms2 client
+Comment=Elementary Xmms2 musicplayer
+Exec=e-music
+Icon=e-music
+Terminal=false
+Type=Application
+Categories=AudioVideo;
+Name[zh_CN]=emusic.desktop
