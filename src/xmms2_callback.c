@@ -134,10 +134,7 @@ _update_track( xmmsv_t* value, void* user_data )
 	{
 //		track_properties.title = guessed_title = guess_title_from_url( track_properties.url );
 	}
-	printf("add to the List:%s\n", track_properties.title);
-//	printf("add to the List:%d\n", 1);
-
-	e_music_playlist_append(sd->playlist_show, &track_properties, 1);
+	e_music_playlist_append(sd->playlist_show, &track_properties, id);
 
 	return TRUE; 
 }
@@ -170,7 +167,7 @@ _on_playlist_content_received( xmmsv_t* value, Evas_Object *playlist_show )
 		xmmsv_get_int( current_value, &id );
 
 		res = xmmsc_medialib_get_info( sd->connection, id );
-        	xmmsc_result_notifier_set_full( res, (xmmsc_result_notifier_t)_update_track, &i, NULL );	  	
+        	xmmsc_result_notifier_set_full( res, (xmmsc_result_notifier_t)_update_track, (int *)i, NULL );	  	
 		xmmsc_result_unref( res );
     	}
 
@@ -189,8 +186,6 @@ e_music_update_play_list( Evas_Object *playlist_show )
     	res = xmmsc_playlist_list_entries( sd->connection, sd->cur_playlist );
     	xmmsc_result_notifier_set_and_unref( res, (xmmsc_result_notifier_t)_on_playlist_content_received, playlist_show );
 
-//////////在这里GO的话，只能在下次事件才能显示
-//	elm_list_go(playlist);
 }
 
 
@@ -373,7 +368,6 @@ static int
 _on_playback_playtime_changed( xmmsv_t* value, void* data )
 {	
     int32_t time;
-    char buf[32];
     if ( xmmsv_is_error(value)
          || ! xmmsv_get_int(value, &time))
         return TRUE;
@@ -382,7 +376,6 @@ _on_playback_playtime_changed( xmmsv_t* value, void* data )
     
 	char time_buf[32];
 	timeval_to_str( time, time_buf, G_N_ELEMENTS(time_buf) );	
-//	elm_label_label_set( sd->playtime_lb, time_buf );
 	edje_object_part_text_set( sd->edje, "text.playtime.label", time_buf );
 
     if( sd->cur_track_duration > 0 )

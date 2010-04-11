@@ -1,0 +1,85 @@
+# vim:set et ts=4:
+#
+# ibus-handwrite - The Ibus handwrite engine
+#
+# Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
+# Copyright (c) 2010 microcai <microcai@fedoraproject.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+# if not 1, append datestamp to the version number.
+m4_define([package_name], [e_music])
+m4_define([e_music_released], [0])
+m4_define([e_music_major_version], [1])
+m4_define([e_music_minor_version], [0])
+m4_define([e_music_micro_version], [0])
+m4_define(e_music_maybe_datestamp,
+    m4_esyscmd([if test x]e_music_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
+
+m4_define([e_music_version],
+    e_music_major_version.e_music_minor_version.e_music_micro_version[]e_music_maybe_datestamp)
+
+AC_INIT([package_name], [e_music_version], [http://code.google.com/p/e-music/issues/entry], [package_name])
+AM_INIT_AUTOMAKE
+AC_GNU_SOURCE
+
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
+
+
+m4_define([xmms2_minimum_version], [0.7])
+m4_define([xmms2_client_ecore_minimum_version], [0.7])
+
+# define PACKAGE_VERSION_* variables
+AM_SANITY_CHECK
+AM_MAINTAINER_MODE
+AC_PROG_CC
+AC_ISC_POSIX
+AC_HEADER_STDC
+PKG_PROG_PKG_CONFIG
+
+AC_ARG_WITH(debian,[AC_HELP_STRING([--with-debian],[enable debian specific build])],[],[])
+				
+# check xmms2
+PKG_CHECK_MODULES(XMMS2, [
+    xmms2-client >= xmms2_minimum_version
+	xmms2-client-ecore >= xmms2_client_ecore_minimum_version
+])
+
+PKG_CHECK_MODULES([ELEMENTARY], elementary)
+
+
+# define GETTEXT_* variables
+GETTEXT_PACKAGE="$PACKAGE_NAME"
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define to the read-only architecture-independent data directory.])
+
+
+AM_CONDITIONAL(HAVE_TOMOE,[test "x$have_tomoe"="xyes"])
+
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.16.1)
+
+AC_DEFINE(MICROCAI_WITHEMAIL,"microcai@fedoraproject.org",[author microcai and his email])
+# OUTPUT files
+AC_CONFIG_FILES(
+Makefile
+src/Makefile
+data/Makefile
+data/desktop/Makefile
+data/themes/Makefile
+)
+
+AC_OUTPUT
