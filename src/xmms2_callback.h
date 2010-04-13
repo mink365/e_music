@@ -22,6 +22,7 @@ typedef struct _TrackProperties{
     int32_t isvbr;
     int32_t bitrate;
     int32_t size;
+    int32_t id;
 }TrackProperties;
 
 

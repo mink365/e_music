@@ -39,8 +39,8 @@ playback_init(Smart_Data *sd)
 
 	xmmsc_result_t *result;
 	xmmsv_t *return_value;
-//	xmmsc_connection_t *connection;
 	gchar *path;
+	gint *ret;
 
 	sd->connection = xmmsc_init ("e_music");
 
@@ -52,16 +52,25 @@ playback_init(Smart_Data *sd)
 
 //---could not get the PATH????
 	path = getenv ("XMMS_PATH");
-
-//	if (!path) {
+	if (!path) {
 //		print_error ( "Could get PATH");
-//	}
+	}
 		
-	if (!xmmsc_connect ( sd->connection, getenv("XMMS_PATH") )) {
+	ret = xmmsc_connect (sd->connection, path);
+	if (!ret)
+	{
+		if (!system("xmms2-launcher"))
+			ret = xmmsc_connect (sd->connection, path);
+	}	
+
+	if ( !ret ) {
 		print_error ("Connection failed: %s\n",
 		         xmmsc_get_last_error (sd->connection));
+		xmmsc_unref (sd->connection);
+		exit (EXIT_FAILURE);
 	}
 	
+/*    get current track ID    */
 	result = xmmsc_playback_current_id (sd->connection);
 	xmmsc_result_wait (result);
 	return_value = xmmsc_result_get_value (result);
