@@ -1,11 +1,11 @@
 #ifndef __MAIN_MENU_H__
 #define __MAIN_MENU_H__
 
-#include "e_music.h"
+#include "emusic.h"
 
 #define ELM_ADD(btn_box, icon, cb)                                   \
     ic = elm_icon_add(sd->layout);                                       \
-    elm_icon_file_set(ic, THEME, icon);            			 \
+    elm_icon_file_set(ic, emusic_config_theme_get(), icon);            			 \
     elm_icon_scale_set(ic, 0, 0);                                    \
     bt = elm_button_add(sd->layout);                                     \
     evas_object_smart_callback_add(bt, "clicked", cb, sd);           \
@@ -24,7 +24,7 @@ int creat_win(Smart_Data *sd);
 int creat_main_menu(Smart_Data *sd);
 int creat_playlist(Smart_Data *sd);
 
-void e_music_switch_pager();
+void emusic_switch_pager();
 
 
 #endif

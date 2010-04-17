@@ -40,6 +40,7 @@ collections {
 				type, RECT;
 				mouse_events, 0;
 				description {
+					color: 255 255 255 0;
 					state, "default" 0.0;
 					rel1.relative, 0.03 0.03;
 					rel2.relative, 0.25 0.35;
@@ -94,7 +95,7 @@ collections {
 			}
 
 
-//-------------------------ifo-----------------
+//-------------------------info-----------------
 
 			part {
 				name, "songs_ifo.area";
@@ -219,26 +220,6 @@ collections {
 			}
 
 ///////////////-----------------time lables--------
-#if 0
-			part {
-				name, "text.duration.swallow";
-				type, TEXT;
-				mouse_events, 0;
-				effect,        SOFT_SHADOW;
-				description {
-					color, 224 224 224 255;
-					state, "default" 0.0;
-					rel1.relative, 0.92 0.86;
-					rel2.relative, 0.99 0.90;
-					
-					text {
-						font: "Sans"; 
-						size, 13;
-						text, "hello";
-					}
-				}			
-			}
-#endif
 			part {
 				name, "text.duration.label";
 				type, TEXT;

@@ -23,6 +23,7 @@
 SUBDIRS = \
 	src \
 	data \
+	po \
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4
@@ -32,28 +33,4 @@ EXTRA_DIST = \
 	@PACKAGE_NAME@.spec.in \
 	debian \
 	$(NULL)
-
-noinst_DIST = \
-	$(NULL)
-
-
-DISTCLEANFILES = \
-	po/stamp-it \
-	$(NULL)
-	
-test: src/Makefile
-	cd src && $(MAKE) $@
 		
-
-rpm: dist @PACKAGE_NAME@.spec
-	rpmbuild -bb \
-			--define "_sourcedir `pwd`" \
-			--define "_builddir `pwd`" \
-			--define "_specdir `pwd`" \
-			--define "_rpmdir `pwd`" \
-			--define "_srcrpmdir `pwd`" \
-			@PACKAGE_NAME@.spec
-clean-rpm:
-	$(RM) -r "`uname -i`"
-
-clean-local: clean-rpm

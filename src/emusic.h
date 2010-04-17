@@ -6,13 +6,20 @@
 #include <xmmsclient/xmmsclient-ecore.h>
 #include <locale.h>
 
-#define ERR(...) EINA_LOG_ERR(__VA_ARGS__)
-
 #define E_MUSIC_NEW(s, n) (s *)calloc(n, sizeof(s))
-#define E_MUSIC_FREE(s, pa) (s *)realloc(pa, 0)
+#define E_MUSIC_FREE(p) do { free(p); p = NULL; } while (0)
 
-#define THEME \
-	PACKAGE_DATA_DIR "e_music.edj"
+#define _(STRING) gettext(STRING)
+
+
+extern int _log_dom;
+
+#define CRITICAL(...) EINA_LOG_DOM_CRIT(_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_WARN(_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
+
 
 Evas_Object *fl;
 Evas_Object *win;
@@ -43,5 +50,7 @@ struct _Smart_Data
 	//	int tmp_id;
 	char *cur_playlist;
 };
+
+Smart_Data  *sd;
 
 #endif

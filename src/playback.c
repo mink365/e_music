@@ -135,7 +135,7 @@ playback_next(xmmsc_connection_t *conn)
 
 
 void
-e_music_playlist_shuffle (xmmsc_connection_t *conn, char *playlist)
+emusic_playlist_shuffle (xmmsc_connection_t *conn, char *playlist)
 {
 	xmmsc_result_t *res;
 
@@ -147,7 +147,7 @@ e_music_playlist_shuffle (xmmsc_connection_t *conn, char *playlist)
 }
 
 void
-e_music_playlist_sort (xmmsc_connection_t *conn, char *playlist, char *ctx)
+emusic_playlist_sort (xmmsc_connection_t *conn, char *playlist, char *ctx)
 {
 	xmmsc_result_t *res;
 	xmmsv_t *orderval;

@@ -1,9 +1,9 @@
 
-#include "e_music_notify.h"
+#include "emusic_notify.h"
 #include <gtk/gtk.h>
 
 
-E_Music_Notification* e_music_notification_new( Evas_Object *status_icon ) 
+Emu_Notification* emusic_notification_new( Evas_Object *status_icon ) 
 {
     E_Music_Notification *n = g_slice_new( E_Music_Notification );
     n->notification = NULL;
@@ -11,7 +11,7 @@ E_Music_Notification* e_music_notification_new( Evas_Object *status_icon )
     return n;
 }
 
-void e_music_notification_free(  E_Music_Notification *n )
+void emusic_notification_free(  E_Music_Notification *n )
 {
     g_slice_free (E_Music_Notification, n);
 }

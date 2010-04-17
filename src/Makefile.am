@@ -20,23 +20,28 @@
 
 
 AM_CFLAGS= @ELEMENTARY_CFLAGS@ @XMMS2_CFLAGS@ -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)/\" \
+			-DLOCALEDIR=\"\\\"$datadir/locale\\\"\" \
 			-DMODEFILE=\"@MODEFILE@\"
 
 AM_LDFLAGS = @XMMS2_LIBS@  @ELEMENTARY_LIBS@
 
 bin_PROGRAMS = e-music
 
-e_music_SOURCES =  e_music.c 	e_music.h 	collections.c collections.h	\
+e_music_SOURCES =  emusic.c 	emusic.h 	collections.c collections.h	\
 					  main_ui.c \
 					  main_ui.h \
 					  playback.c \
 					  playback.h \
-					  xmms2_callback.c \
-					  xmms2_callback.h \
+					  emusic_callback.c \
+					  emusic_callback.h \
 					  utils.h \
 					  utils.c \
-					  e_music_playlist.h \
-					  e_music_playlist.c \
+					  emusic_playlist.h \
+					  emusic_playlist.c \
+					  emusic_config.c \
+					  emusic_config.h \
+					  emusic_medialib_info.h emusic_medialib_info.c \
+					  emusic_cover_art.h emusic_cover_art.c \
 					  $(NULL)
 
 

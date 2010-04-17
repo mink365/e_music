@@ -6,7 +6,7 @@ EDJE_CC = edje_cc
 
 #filesdir = $(datadir)/$(PACKAGE)
 #files_DATA = e_music.edj
-e_musicdir = $(datadir)/$(PACKAGE)
+e_musicdir = $(pkgdatadir)/theme
 e_music_DATA = e_music.edj
 
 e_music.edj: 
