@@ -1,0 +1,26 @@
+#/bin/sh
+
+
+find . -name "*.in" > tmp
+
+cat tmp | while read line
+do
+
+        if [[ -n `echo $line | grep po` ]]
+        then
+              echo "hello"
+        else 
+               rm $line
+        fi        
+
+done
+
+rm configure
+
+rm ltmain.sh
+
+rm -r autom4te.cache
+
+rm aclocal.m4
+
+rm m4/*

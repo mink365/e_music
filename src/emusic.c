@@ -86,9 +86,10 @@ main(int argc, char **argv)
 
 	elm_init(argc, argv);
 
-	/*  Main Loop*/
+	
 	elm_main();
 
+	/*  Main Loop*/
 	elm_run();
 
 

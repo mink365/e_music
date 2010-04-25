@@ -1,17 +1,15 @@
-images {
-   image: "background.png" COMP;
-   image: "controller-background.png" COMP;
-   image: "bg_music.jpg" COMP;
-}
 
-collections {
-
-#include "elm.edc"
-#include "icons.edc"
-
-	group {
-		name: "main";
+group {
+		name: "main/mediaplayer_view";
 //		min, 800 400;
+
+
+		images {
+	   		image: "background.png" COMP;
+	   		image: "controller-background.png" COMP;
+	   		image: "bg_music.jpg" COMP;
+		}
+
 
 		parts {
 			part {
@@ -265,8 +263,6 @@ collections {
 	
 		}
 	
-	}
-
-
 }
+
 

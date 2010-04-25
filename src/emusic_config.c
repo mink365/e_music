@@ -145,7 +145,7 @@ _config_new(void)
 	emu_config->cfg_file = (char *)eina_stringshare_add(buf);	
 
 
-	emu_config->theme     = "e_music";
+	emu_config->theme     = "emusic";
 	emu_config->engine    = "software_x11";
 	emu_config->log_file  = NULL;
 	emu_config->log_level = 3;

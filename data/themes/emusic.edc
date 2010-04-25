@@ -1,0 +1,209 @@
+
+#define TIMEOUT_HIDE 0.4
+
+
+collections {
+
+#include "elm.edc"
+#include "icons.edc"
+#include "mediaplayer.edc"
+#include "playlist.edc"
+
+	group {
+		name: "main";
+
+		images {
+	   		image: "background.png" COMP;
+		}
+				
+		parts {
+			part {
+	    		name: "master_clipper";
+            	type: RECT;
+            	description {
+               		state: "default" 0.0;
+            	   	rel1 {
+                  	relative: 0.0 0.0;
+                  	offset: 0 0;
+               		}
+               		rel2 {
+                  		relative: 1.0 1.0;
+                  		offset: -1 -1;
+               		}
+            	}
+            	description {
+               		state: "hidden" 0.0;
+               		inherit: "default" 0.0;
+               		color: 255 255 255 0;
+            	}
+         	}
+
+         part {
+            	name: "background";
+            	type: IMAGE;
+            	mouse_events: 0;
+            	clip_to: "master_clipper";
+            	description {
+               		state: "default" 0.0;
+               		rel1 {
+                  		relative: 0.0 0.0;
+                  		offset: 0 0;
+               		}
+               		rel2 {
+                  		relative: 1.0 1.0;
+                  		offset: -1 -1;
+               		}
+               		image.normal: "background.png";
+            	}
+         	}
+
+//----------------------------------------       
+
+		part {
+				name: "mediaplayer_view";
+				type: SWALLOW;
+				clip_to: "master_clipper";
+				description {
+					state, "default" 0.0;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: 0 0;
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 0 0;
+					}
+				}
+				description {
+					state: "hidden" 0.0;
+					rel1 {
+						relative: -1.0 0.0;
+						offset: 0 0;
+					}
+					rel2 {
+						relative: 0.0 1.0;
+						offset: 0 0;
+					}					
+				}
+			}
+
+         programs {
+            program {
+               name: "transition,hide,mediaplayer_view";
+               signal: "transition,hide,mediaplayer_view";
+               action: STATE_SET "hidden" 0.0;
+               transition: LINEAR TIMEOUT_HIDE;
+               target: "mediaplayer_view";
+               after: "transition,hide,mediaplayer_view,finished";
+            }
+            program {
+               name: "transition,hide,mediaplayer_view,finished";
+               action: SIGNAL_EMIT "transition,hide,mediaplayer_view,finished" "";
+            }
+
+            program {
+               name: "transition,show,mediaplayer_view";
+               signal: "transition,show,mediaplayer_view";
+               action: STATE_SET "default" 0.0;
+               transition: LINEAR TIMEOUT_HIDE;
+               target: "mediaplayer_view";
+               after: "transition,show,mediaplayer_view,finished";
+            }
+            program {
+               name: "transition,show,mediaplayer_view,finished";
+               action: SIGNAL_EMIT "transition,show,mediaplayer_view,finished" "";
+            }
+
+            program {
+               name: "hide,mediaplayer_view";
+               signal: "hide,mediaplayer_view";
+               action: STATE_SET "hidden" 0.0;
+               target: "mediaplayer_view";
+            }
+
+            program {
+               name: "show,mediaplayer_view";
+               signal: "show,mediaplayer_view";
+               action: STATE_SET "default" 0.0;
+               target: "mediaplayer_view";
+            }
+         }	
+		
+
+/////--------------------------------------------
+		part {
+				name: "playlist_view";
+				type: SWALLOW;
+				clip_to: "master_clipper";
+				description {
+					state: "default" 0.0;
+					rel1 {
+						relative: 1.0 0.0;
+						offset: 0 0;
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 0 0;
+					}
+				}
+				
+				description {
+					state: "show" 0.0;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: 0 0;
+					}
+					rel2 {
+						relative: 2.0 1.0;
+						offset: 0 0;
+					}
+
+				}
+		}
+
+         programs {
+            program {
+               name: "transition,hide,playlist_view";
+               signal: "transition,hide,playlist_view";
+               action: STATE_SET "default" 0.0;
+               transition: LINEAR TIMEOUT_HIDE;
+               target: "playlist_view";
+               after: "transition,hide,playlist_view,finished";
+            }
+            program {
+               name: "transition,hide,playlist_view,finished";
+               action: SIGNAL_EMIT "transition,hide,playlist_view,finished" "";
+            }
+
+            program {
+               name: "transition,show,playlist_view";
+               signal: "transition,show,playlist_view";
+               action: STATE_SET "show" 0.0;
+               transition: LINEAR TIMEOUT_HIDE;
+               target: "playlist_view";
+               after: "transition,show,playlist_view,finished";
+            }
+            program {
+               name: "transition,show,playlist_view,finished";
+               action: SIGNAL_EMIT "transition,show,playlist_view,finished" "";
+            }
+
+            program {
+               name: "hide,playlist_view";
+               signal: "hide,playlist_view";
+               action: STATE_SET "default" 0.0;
+               target: "playlist_view";
+            }
+
+            program {
+               name: "show,playlist_view";
+               signal: "show,playlist_view";
+               action: STATE_SET "show" 0.0;
+               target: "playlist_view";
+            }
+         }			
+
+			
+		}
+	} 
+}

@@ -29,6 +29,8 @@ typedef struct _Smart_Data Smart_Data;
 struct _Smart_Data
 {
 	Evas_Object *layout;
+	Evas_Object *mediaplayer;
+	Evas_Object *playlist;
 	Evas_Object *edje;
 	Evas_Object *cover;
 	Evas_Object *slider;

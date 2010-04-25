@@ -80,7 +80,7 @@ _list_sel(void *data, Evas_Object *obj, void *event_info)
 
 	emusic_play( list_id );
 	/*              */      
-	emusic_switch_pager();
+	emusic_switch_to_mediaplayer();
 }
 
 void

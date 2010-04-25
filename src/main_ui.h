@@ -18,8 +18,6 @@
     evas_object_show(ic);                                            
 
 
-static const char _EDJE_GROUP_MAIN[] = "main";
-
 int creat_win(Smart_Data *sd);
 int creat_main_menu(Smart_Data *sd);
 int creat_playlist(Smart_Data *sd);

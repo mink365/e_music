@@ -123,7 +123,7 @@ _on_playback_status_changed( xmmsv_t *value, void *data )
 			{
 				xmmsc_result_t* res2;
 
-				ic = elm_icon_add(sd->layout);                                    
+				ic = elm_icon_add(sd->mediaplayer);                                    
 				elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_play"); 
 				elm_button_icon_set(sd->play_btn, ic);
 				INF("Switch to play\n");
@@ -132,12 +132,12 @@ _on_playback_status_changed( xmmsv_t *value, void *data )
 			}
 		case XMMS_PLAYBACK_STATUS_STOP:
 			INF("Switch to STOP");
-			ic = elm_icon_add(sd->layout);                                    
+			ic = elm_icon_add(sd->mediaplayer);                                    
 			elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_stop"); 
 			elm_button_icon_set(sd->play_btn, ic);
 
 		case XMMS_PLAYBACK_STATUS_PAUSE:
-			ic = elm_icon_add(sd->layout);                                    
+			ic = elm_icon_add(sd->mediaplayer);                                    
 			elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_pause"); 
 			elm_button_icon_set(sd->play_btn, ic);
 			INF("Switch to pause\n");
@@ -183,7 +183,7 @@ _on_playback_playtime_changed( xmmsv_t* value, void* data )
 
 	char time_buf[32];
 	timeval_to_str( time, time_buf, G_N_ELEMENTS(time_buf) );	
-	edje_object_part_text_set( sd->edje, "text.playtime.label", time_buf );
+	edje_object_part_text_set( elm_layout_edje_get(sd->mediaplayer), "text.playtime.label", time_buf );
 
 	if( sd->cur_track_duration > 0 )
 	{		
@@ -212,9 +212,9 @@ _on_playback_cur_track_changed( xmmsv_t* value, void* user_data )
 			{
 				evas_object_hide(sd->cover);
 				evas_object_del(sd->cover);
-				sd->cover = elm_image_add(sd->layout);
+				sd->cover = elm_image_add(sd->mediaplayer);
 				elm_image_file_set(sd->cover, mdinfo->cover_path, NULL);	
-				elm_layout_content_set(sd->layout, "cover.swallow", sd->cover);
+				elm_layout_content_set(sd->mediaplayer, "cover.swallow", sd->cover);
 				evas_object_show(sd->cover);
 			}
 			else
@@ -222,9 +222,9 @@ _on_playback_cur_track_changed( xmmsv_t* value, void* user_data )
 				/* Default cover ??? */
 				evas_object_hide(sd->cover);
 				evas_object_del(sd->cover);
-				sd->cover = elm_image_add(sd->layout);
+				sd->cover = elm_image_add(sd->mediaplayer);
 				elm_image_file_set(sd->cover, emusic_config_theme_get(), "icon/cover");	
-				elm_layout_content_set(sd->layout, "cover.swallow", sd->cover);
+				elm_layout_content_set(sd->mediaplayer, "cover.swallow", sd->cover);
 				evas_object_show(sd->cover);
 			}
 
@@ -238,7 +238,7 @@ _on_playback_cur_track_changed( xmmsv_t* value, void* user_data )
 			sd->cur_track_duration = mdinfo->duration;
 			char time_buf[32];
 			timeval_to_str( mdinfo->duration/1000, time_buf, G_N_ELEMENTS(time_buf) );	
-			edje_object_part_text_set( sd->edje, "text.duration.label", time_buf );
+			edje_object_part_text_set( elm_layout_edje_get(sd->mediaplayer), "text.duration.label", time_buf );
 
 			/*FIXME: free mdinfo???*/
 			free(mdinfo);
@@ -331,7 +331,7 @@ _config_changed_foreach(const char *key, xmmsv_t *value, void* user_data)
 {
 	Evas_Object *ic;
 
-	ic = elm_icon_add(sd->layout);
+	ic = elm_icon_add(sd->mediaplayer);
 
 	if( strncmp( key, "playlist.", 9) == 0 )
 	{
