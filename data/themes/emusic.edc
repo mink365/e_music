@@ -8,12 +8,13 @@ collections {
 #include "icons.edc"
 #include "mediaplayer.edc"
 #include "playlist.edc"
+#include "cover.edc"
 
 	group {
 		name: "main";
 
 		images {
-	   		image: "background.png" COMP;
+	   		image: "images/background.png" COMP;
 		}
 				
 		parts {
@@ -53,7 +54,7 @@ collections {
                   		relative: 1.0 1.0;
                   		offset: -1 -1;
                		}
-               		image.normal: "background.png";
+               		image.normal: "images/background.png";
             	}
          	}
 

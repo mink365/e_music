@@ -49,6 +49,7 @@ struct _Smart_Data
 	int repeat_mode;
 	int shuffle_mode;
 	int cur_track_id;
+	int slider_runing;
 	//	int tmp_id;
 	char *cur_playlist;
 };

@@ -12,7 +12,6 @@ extern Smart_Data  *sd;
 	void
 emusic_play(int id)
 {
-	printf("item ID [%d]\n", id);
 
 	xmmsc_result_t* res;
 	res = xmmsc_playlist_set_next( sd->connection, id );
@@ -160,14 +159,10 @@ _on_playlist_loaded(xmmsv_t* value, gpointer user_data)
 
 		/* invalidate currenyly played track id. */
 		sd->cur_track_id = 0;
-
-		/* if there are pending requests, cancel them */
-		//        cancel_pending_update_tracks();
-
+		
 		emusic_update_play_list( sd->playlist_show );
 	}
 
-	printf("loaded Playlist!!!\n");
 	return TRUE;
 }
 
@@ -185,12 +180,9 @@ _on_playback_playtime_changed( xmmsv_t* value, void* data )
 	timeval_to_str( time, time_buf, G_N_ELEMENTS(time_buf) );	
 	edje_object_part_text_set( elm_layout_edje_get(sd->mediaplayer), "text.playtime.label", time_buf );
 
-	if( sd->cur_track_duration > 0 )
-	{		
-		//        g_signal_handlers_block_by_func(progress_bar, on_progress_bar_changed, user_data);
-		//        gtk_range_set_value( (GtkRange*)progress_bar,
-		//                              (((gdouble)100000 * time) / cur_track_duration) );
-		//        g_signal_handlers_unblock_by_func(progress_bar, on_progress_bar_changed, user_data);
+	if( sd->cur_track_duration > 0 && sd->slider_runing == FALSE)
+	{
+//		INF("slider go go go!!!");		
 		elm_slider_value_set(sd->slider, (((gdouble)1000 * time) / sd->cur_track_duration));
 	}
 	return TRUE;
@@ -208,26 +200,17 @@ _on_playback_cur_track_changed( xmmsv_t* value, void* user_data )
 		if (mdinfo != NULL)
 		{
 
+
+			evas_object_hide(sd->cover);
+			evas_object_del(sd->cover);
 			if (mdinfo->cover_path)
 			{
-				evas_object_hide(sd->cover);
-				evas_object_del(sd->cover);
 				sd->cover = elm_image_add(sd->mediaplayer);
-				elm_image_file_set(sd->cover, mdinfo->cover_path, NULL);	
-				elm_layout_content_set(sd->mediaplayer, "cover.swallow", sd->cover);
+				elm_image_file_set(sd->cover, mdinfo->cover_path, NULL);					
+				edje_object_part_swallow(edje_object_part_swallow_get(elm_layout_edje_get(sd->mediaplayer), 
+							"main/mediaplayer_view/cover_view"), "album_cover", sd->cover);
 				evas_object_show(sd->cover);
 			}
-			else
-			{
-				/* Default cover ??? */
-				evas_object_hide(sd->cover);
-				evas_object_del(sd->cover);
-				sd->cover = elm_image_add(sd->mediaplayer);
-				elm_image_file_set(sd->cover, emusic_config_theme_get(), "icon/cover");	
-				elm_layout_content_set(sd->mediaplayer, "cover.swallow", sd->cover);
-				evas_object_show(sd->cover);
-			}
-
 		
 			elm_button_label_set(sd->artist_show, mdinfo->artist);
 

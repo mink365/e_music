@@ -32,30 +32,30 @@ group {                                             \
       }                                                                 \
    }
 
-STOCK_ICON("bg_music.jpg",                    "icon/cover");
+STOCK_ICON("images/bg_music.jpg",                    "icon/cover");
 
 
-STOCK_ICON("mp_forward.png",                    "icon/mp_forward");
-STOCK_ICON("mp_next.png",                       "icon/mp_next");
-STOCK_ICON("mp_play.png",                       "icon/mp_play");
-STOCK_ICON("mp_prev.png",                       "icon/mp_prev");
-STOCK_ICON("mp_rewind.png",                     "icon/mp_rewind");
-STOCK_ICON("mp_stop.png",                       "icon/mp_stop");
-STOCK_ICON("mp_pause.png",                       "icon/mp_pause");
+STOCK_ICON("images/mp_forward.png",                    "icon/mp_forward");
+STOCK_ICON("images/mp_next.png",                       "icon/mp_next");
+STOCK_ICON("images/mp_play.png",                       "icon/mp_play");
+STOCK_ICON("images/mp_prev.png",                       "icon/mp_prev");
+STOCK_ICON("images/mp_rewind.png",                     "icon/mp_rewind");
+STOCK_ICON("images/mp_stop.png",                       "icon/mp_stop");
+STOCK_ICON("images/mp_pause.png",                       "icon/mp_pause");
 
-STOCK_ICON("ic_mp_current_playlist_btn.png",                 "icon/mp_playlist");
+STOCK_ICON("images/ic_mp_current_playlist_btn.png",                 "icon/mp_playlist");
 
-STOCK_ICON("ic_mp_repeat_all_btn.png",                       "icon/mp_repeat_all");
-STOCK_ICON("ic_mp_repeat_off_btn.png",                       "icon/mp_repeat_off");
-STOCK_ICON("ic_mp_repeat_once_btn.png",                       "icon/mp_repeat_once");
+STOCK_ICON("images/ic_mp_repeat_all_btn.png",                       "icon/mp_repeat_all");
+STOCK_ICON("images/ic_mp_repeat_off_btn.png",                       "icon/mp_repeat_off");
+STOCK_ICON("images/ic_mp_repeat_once_btn.png",                       "icon/mp_repeat_once");
 
-STOCK_ICON("ic_mp_shuffle_on_btn.png",                       "icon/mp_shuffle_on");
-STOCK_ICON("ic_mp_shuffle_off_btn.png",                       "icon/mp_shuffle_off");
+STOCK_ICON("images/ic_mp_shuffle_on_btn.png",                       "icon/mp_shuffle_on");
+STOCK_ICON("images/ic_mp_shuffle_off_btn.png",                       "icon/mp_shuffle_off");
 
-STOCK_ICON("icon_album.png",                       "icon/album");
-STOCK_ICON("icon_artist.png",                       "icon/artist");
-STOCK_ICON("icon_music.png",                       "icon/title");
+STOCK_ICON("images/icon_album.png",                       "icon/album");
+STOCK_ICON("images/icon_artist.png",                       "icon/artist");
+STOCK_ICON("images/icon_music.png",                       "icon/title");
 
-STOCK_ICON("dev_cdda2.png",                       "icon/music");
-STOCK_ICON("dev_ipod.png",                       "icon/playing");
+STOCK_ICON("images/dev_cdda2.png",                       "icon/music");
+STOCK_ICON("images/dev_ipod.png",                       "icon/playing");
 

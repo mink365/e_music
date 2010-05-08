@@ -25,6 +25,13 @@ emusic_switch_to_mediaplayer()
 	edje_object_signal_emit(elm_layout_edje_get(sd->layout), "transition,show,mediaplayer_view", "");
 }
 
+	void
+emusic_switch_to_playlist()
+{
+	edje_object_signal_emit(elm_layout_edje_get(sd->layout), "transition,hide,mediaplayer_view", "");
+	edje_object_signal_emit(elm_layout_edje_get(sd->layout), "transition,show,playlist_view", "");
+}
+
 /*      playback events from buttons        */
 	static void
 _button_clicked_play_cb(void *data, Evas_Object *obj, void *event_info)
@@ -60,7 +67,7 @@ _button_clicked_next_cb(void *data, Evas_Object *obj, void *event_info)
 _button_clicked_playlist_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	emusic_update_play_list(sd->playlist_show);
-	elm_flip_go(fl, ELM_FLIP_ROTATE_Y_CENTER_AXIS);
+	emusic_switch_to_playlist();
 }
 
 	static void
@@ -136,7 +143,7 @@ _button_clicked_artist_cb(void *data, Evas_Object *obj, void *event_info)
 
 	emusic_update_play_list(sd->playlist_show);
 
-	elm_flip_go(fl, ELM_FLIP_ROTATE_Y_CENTER_AXIS);
+	emusic_switch_to_playlist();
 
 }
 
@@ -160,7 +167,7 @@ _button_clicked_album_cb(void *data, Evas_Object *obj, void *event_info)
 
 	emusic_update_play_list(sd->playlist_show);
 
-	elm_flip_go(fl, ELM_FLIP_ROTATE_Y_CENTER_AXIS);
+	emusic_switch_to_playlist();
 
 }
 
@@ -173,8 +180,9 @@ _button_clicked_title_cb(void *data, Evas_Object *obj, void *event_info)
 	strcat(buf, "*");
 	strcat(buf, "'");
 
-
 	collections_creat ( sd->connection, buf );
+
+	emusic_mlib_browse_update_artists();
 
 	xmmsc_playlist_clear(sd->connection, NULL);
 
@@ -192,13 +200,16 @@ _button_clicked_title_cb(void *data, Evas_Object *obj, void *event_info)
 _slider_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	Smart_Data *sd = data;
-
 	xmmsc_result_t* res;
+
+	sd->slider_runing = TRUE;
 	double val = elm_slider_value_get(obj);
 	uint32_t new_play_time = val * sd->cur_track_duration;
 	INF("val: %f ,new play time : %d, cur duration : %d\n", val, new_play_time, sd->cur_track_duration );
 	res = xmmsc_playback_seek_ms( sd->connection, new_play_time, XMMS_PLAYBACK_SEEK_SET );
+
 	xmmsc_result_unref(res);
+	sd->slider_runing = FALSE;
 }
 
 
@@ -217,12 +228,7 @@ creat_win(Smart_Data *sd)
 
 	Evas_Object *bg, *bx;
 
-	// set custom elementary theme
-	elm_theme_overlay_add("e_music");
-
-
 	win = elm_win_add(NULL, "e_music", ELM_WIN_BASIC);
-
 
 	sd->layout = elm_layout_add(win);
 	if (!sd->layout)
@@ -249,7 +255,7 @@ creat_win(Smart_Data *sd)
 
 	elm_win_title_set(win, "E_Music");
 	evas_object_smart_callback_add(win, "delete,request", _win_del, NULL);
-	evas_object_resize(win, 800, 480);
+	evas_object_resize(win, 800, 400);
 	evas_object_show(win);
 
 	return 1;
@@ -267,7 +273,7 @@ creat_main_menu(Smart_Data *sd)
 	Evas_Object *ic;
 	Evas_Object *bt;
 
-	Evas_Object *playlist_ctl_box;
+	Evas_Object *playlist_ctl_box, *playlist_btn;
 
 	Evas_Object *ifo_box;
 
@@ -290,35 +296,38 @@ creat_main_menu(Smart_Data *sd)
     	evas_object_del(mediaplayer);
     	return NULL;
   	}
-//  	evas_object_size_hint_weight_set(mediaplayer, 1.0, 1.0);
-//	elm_win_resize_object_add(win, mediaplayer);
+  	evas_object_size_hint_weight_set(mediaplayer, 1.0, 1.0);
+	elm_win_resize_object_add(win, mediaplayer);
   	evas_object_show(mediaplayer);
 
   	sd->mediaplayer = mediaplayer;
   	elm_layout_content_set(sd->layout, _EDJE_PART_MEDIAPLAYER, mediaplayer);
 	
-	/*             cover                             */
-#if 0
-	sd->cover = elm_image_add(sd->layout);
-	elm_image_file_set(sd->cover, emusic_config_theme_get(), "icon/cover");	
-	elm_layout_content_set(sd->layout, "cover.swallow", sd->cover);
-	evas_object_show(sd->cover);
-#endif
 
 	/*              playlis control                          */
 	playlist_ctl_box = elm_box_add(mediaplayer);
 	elm_box_homogenous_set(playlist_ctl_box, 0);
 	elm_box_horizontal_set(playlist_ctl_box, 1);
 
-//	ELM_ADD(playlist_ctl_box, "icon/mp_playlist",  _button_clicked_playlist_cb);
+	//	ELM_ADD(playlist_ctl_box, "icon/mp_playlist",  _button_clicked_playlist_cb);
 	//    ELM_ADD(playlist_ctl_box, "icon/mp_repeat_off",  _button_clicked_repeat_cb);
 	//    ELM_ADD(playlist_ctl_box, "icon/mp_shuffle_off",  _button_clicked_shuffle_cb);
+	ic = elm_icon_add(mediaplayer);                                    
+	elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_playlist"); 
+	playlist_btn = elm_button_add(mediaplayer);
+	evas_object_smart_callback_add(playlist_btn, "clicked", _button_clicked_playlist_cb, sd);
+	elm_button_icon_set(playlist_btn, ic);         
+//	elm_object_style_set(playlist_btn, "simple");
+	elm_box_pack_end(playlist_ctl_box, playlist_btn);
+	evas_object_show(playlist_btn);
+	evas_object_show(ic);
+	
 	ic = elm_icon_add(mediaplayer);                                    
 	elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_repeat_off"); 
 	sd->repeat_btn = elm_button_add(mediaplayer);
 	evas_object_smart_callback_add(sd->repeat_btn, "clicked", _button_clicked_repeat_cb, sd);
 	elm_button_icon_set(sd->repeat_btn, ic);         
-	elm_object_style_set(sd->repeat_btn, "simple");
+//	elm_object_style_set(sd->repeat_btn, "simple");
 	elm_box_pack_end(playlist_ctl_box, sd->repeat_btn);
 	evas_object_show(sd->repeat_btn);
 	evas_object_show(ic);
@@ -328,7 +337,7 @@ creat_main_menu(Smart_Data *sd)
 	sd->shuffle_btn = elm_button_add(mediaplayer);
 	evas_object_smart_callback_add(sd->shuffle_btn, "clicked", _button_clicked_shuffle_cb, sd);
 	elm_button_icon_set(sd->shuffle_btn, ic);            
-	elm_object_style_set(sd->shuffle_btn, "simple");
+//	elm_object_style_set(sd->shuffle_btn, "simple");
 	elm_box_pack_end(playlist_ctl_box, sd->shuffle_btn);
 	evas_object_show(sd->shuffle_btn);
 	evas_object_show(ic);
@@ -398,7 +407,7 @@ creat_main_menu(Smart_Data *sd)
 	sd->play_btn = elm_button_add(mediaplayer);
 	evas_object_smart_callback_add(sd->play_btn, "clicked", _button_clicked_play_cb, sd);
 	elm_button_icon_set(sd->play_btn, ic);          
-	elm_object_style_set(sd->play_btn, "simple");
+//	elm_object_style_set(sd->play_btn, "simple");
 	elm_box_pack_end(play_ctl_box, sd->play_btn);
 	evas_object_show(sd->play_btn);
 	evas_object_show(ic);
@@ -411,7 +420,7 @@ creat_main_menu(Smart_Data *sd)
 
 	/*                  slider                       */
 	sd->slider = elm_slider_add(mediaplayer);
-	evas_object_smart_callback_add(sd->slider, "delay,changed", _slider_changed_cb, sd);
+	evas_object_smart_callback_add(sd->slider, "changed", _slider_changed_cb, sd);
 	elm_slider_label_set(sd->slider, "Label");
 	//   elm_slider_icon_set(sl, ic);
 	elm_slider_unit_format_set(sd->slider, "%1.1f units");
