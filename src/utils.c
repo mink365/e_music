@@ -28,23 +28,6 @@
 #include <glib/gi18n.h>
 #include "utils.h"
 
-void kf_get_bool(GKeyFile* kf, const char* grp, const char* key, gboolean* val)
-{
-    GError* err = NULL;
-    gboolean ret = g_key_file_get_boolean(kf, grp, key, &err);
-    if( err )
-        g_error_free(err);
-    else
-        *val = ret;
-}
-
-void kf_get_int(GKeyFile* kf, const char* grp, const char* key, int* val)
-{
-    gint ret;
-    if (( ret = g_key_file_get_integer(kf, grp, key, NULL ) ) != 0 )
-        *val = ret;
-}
-
 gchar* utf8_strcasestr( const char* s1, const char* s2 )
 {
     gchar *p1 = g_utf8_casefold ( s1, -1 );
@@ -57,7 +40,7 @@ gchar* utf8_strcasestr( const char* s1, const char* s2 )
     return found;
 }
 
-const char* timeval_to_str( guint timeval, char* buf, guint buf_len )
+const char* utils_timeval_to_str( guint timeval, char* buf, guint buf_len )
 {
     guint hr, min, sec;
 
@@ -90,21 +73,4 @@ void xmmsc_result_notifier_set_and_unref (xmmsc_result_t *res, xmmsc_result_noti
 {
 	xmmsc_result_notifier_set_full (res, func, user_data, NULL);
 	xmmsc_result_unref(res);
-}
-
-void
-print_error (const gchar *fmt, ...)
-{
-	gchar buf[1024];
-	va_list ap;
-
-	va_start (ap, fmt);
-	g_vsnprintf (buf, 1024, fmt, ap);
-	va_end (ap);
-
-	g_printerr ("ERROR: %s\n", buf);
-
-	exit (EXIT_FAILURE);
-}
-
-	
+}	

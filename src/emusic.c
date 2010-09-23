@@ -1,54 +1,37 @@
-//#include <Elementary.h>
-//#include <glib.h>
-#include "emusic.h"
-#include "playback.h"
+#include <Elementary.h>
+#include <glib.h>
 #include "main_ui.h"
-#include "emusic_callback.h"
+#include "backend/backend.h"
 #include "emusic_config.h"
 
-Smart_Data  *sd;
+Em_Smart_Data  *em;
 
-int _log_dom = -1;
+//int _log_dom = -1;
 
 /* Functions */
 	int
 elm_main()
 {
-
-	if (!creat_win(sd))
+	if (!creat_win(em))
 	{
 		ERR("could not create WIN.\n");
 		return 0;		
 	}
 
-
-	if (!creat_playlist(sd))
-	{
-		ERR("could not create Playlist Show.\n");
-		return 0;		
-	}
-
-
-	if (!creat_main_menu(sd))
-	{
-		ERR("could not create MAIN_menu.\n");
-		return 0;		
-	}
-
-	if (!setup_xmms2_callback(sd))
+	if (!emusic_setup_callback(em))
 	{
 		ERR("Could not creat callback.\n");
 		return 0;
 	}
 
-	return 0;
+	return 1;
 }
 
 
 	int
 main(int argc, char **argv)
 {
-	sd = E_MUSIC_NEW(Smart_Data, 1);
+	em = E_MUSIC_NEW(Em_Smart_Data, 1);
 
 
 	/*     Init  Local     */
@@ -77,23 +60,21 @@ main(int argc, char **argv)
 	emusic_config_load_theme();
 	eina_log_domain_level_set("E-music", emusic_config->log_level);
 
-
-	if (!playback_init(sd))
+	if (!emusic_playback_init(em))
 	{
 		ERR("could not init playback.\n");
 		return 0;
 	}
 
 	elm_init(argc, argv);
-
-	
 	elm_main();
 
 	/*  Main Loop*/
 	elm_run();
 
-
 	emusic_config_shutdown();
 	eina_log_domain_unregister(_log_dom);	
 	elm_shutdown();
+	
+	return 0;
 }

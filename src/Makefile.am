@@ -1,8 +1,8 @@
 # vim:set noet ts=4:
 #
-# ibus-handwrite - The handwrite engine for IBus
+# emusic - Simple music player based on Xmms2 and EFL.
 #
-# Copyright (c) 2010 microcai <microcai@fedoraproject.org>
+# Copyright (c) 2010 mink365 <mink365@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,21 +27,30 @@ AM_LDFLAGS = @XMMS2_LIBS@  @ELEMENTARY_LIBS@
 
 bin_PROGRAMS = e-music
 
-e_music_SOURCES =  emusic.c 	emusic.h 	collections.c collections.h	\
-					  main_ui.c \
-					  main_ui.h \
-					  playback.c \
-					  playback.h \
-					  emusic_callback.c \
-					  emusic_callback.h \
-					  utils.h \
-					  utils.c \
-					  emusic_playlist.h \
-					  emusic_playlist.c \
-					  emusic_config.c \
-					  emusic_config.h \
-					  emusic_medialib_info.h emusic_medialib_info.c \
-					  emusic_cover_art.h emusic_cover_art.c \
+e_music_SOURCES =  emusic.c 	emusic.h \
+					  main_ui.c main_ui.h \
+					  emusic_config.c emusic_config.h \
+					  ui/emusic_cover_art.h ui/emusic_cover_art.c \
+					  ui/emusic_config_dialog.c ui/emusic_config_dialog.h \
+					  ui/emusic_event_bg.c ui/emusic_event_bg.h \
+					  ui/emusic_info.c ui/emusic_info.h \
+				      ui/emusic_notify.c ui/emusic_notify.h \
+                      ui/emusic_play_ctl.c ui/emusic_play_ctl.h \
+                      ui/emusic_playlist_ctl.c ui/emusic_playlist_ctl.h \
+					  ui/emusic_playlist_view.c ui/emusic_playlist_view.h \
+			          ui/emusic_slider.c ui/emusic_slider.h \
+					backend/xmms2/playback.c backend/xmms2/playback.h \
+					backend/xmms2/collections.c backend/xmms2/collections.h \
+					backend/xmms2/playlist.c backend/xmms2/playlist.h \
+					backend/xmms2/album_cover.c backend/xmms2/album_cover.h \
+					backend/xmms2/callback.c backend/xmms2/callback.h \
+					backend/xmms2/medialib_info.h backend/xmms2/medialib_info.c \
+					utils.h utils.c \
 					  $(NULL)
+
+
+INCLUDES = \
+	-I$(top_srcdir) \
+	$(NULL)
 
 

@@ -5,11 +5,7 @@
 
 #include "emusic_config.h"
 #include "emusic.h"
-#include "utils.h"
 
-/*  */
-
-/*  */
 
 Eet_Data_Descriptor *edd = NULL;
 
@@ -62,9 +58,9 @@ _config_load(const char *filename)
 	if (!emusic_config)
 	{
 		ERR("Can't get the config data!");	
-		eet_close(ef);	
+		eet_close(ef);
+		return NULL;
 	}
-
 }
 
 	static void
@@ -192,7 +188,6 @@ emusic_config_init (const char *file)
 	void
 emusic_config_shutdown (void)
 {
-
 	/* save current configuration to file */
 	_config_save(emusic_config, emusic_config->cfg_file);
 
@@ -215,7 +210,7 @@ emusic_config_load_theme (void)
 	if (!emusic_config->theme_file)
 		goto err_theme;
 
-	elm_theme_overlay_add(emusic_config->theme_file);
+	elm_theme_overlay_add(NULL, emusic_config->theme_file);
 	return;
 
 err_theme:

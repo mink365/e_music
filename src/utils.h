@@ -26,23 +26,13 @@
 
 #include <xmmsclient/xmmsclient.h>
 
-G_BEGIN_DECLS
-
-void kf_get_bool(GKeyFile* kf, const char* grp, const char* key, gboolean* val);
-void kf_get_int(GKeyFile* kf, const char* grp, const char* key, int* val);
-
 gchar* utf8_strcasestr( const gchar* s1, const gchar* s2 );
 
-const char* timeval_to_str( guint timeval, char* buf, guint buf_len );
+const char* utils_timeval_to_str( guint timeval, char* buf, guint buf_len );
 
 gchar* guess_title_from_url (const char *url);
 
 
 void xmmsc_result_notifier_set_and_unref (xmmsc_result_t *res, xmmsc_result_notifier_t func, void *user_data);
-
-void print_error (const gchar *fmt, ...);
-
-
-G_END_DECLS
 
 #endif

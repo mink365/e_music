@@ -7,15 +7,12 @@ collections {
 #include "elm.edc"
 #include "icons.edc"
 #include "mediaplayer.edc"
-#include "playlist.edc"
-#include "cover.edc"
+#include "playlist_view.edc"
+#include "widget.edc"
+#include "config_dialog.edc"
 
 	group {
-		name: "main";
-
-		images {
-	   		image: "images/background.png" COMP;
-		}
+		name: "emusic/main";
 				
 		parts {
 			part {
@@ -38,23 +35,19 @@ collections {
                		color: 255 255 255 0;
             	}
          	}
-
-         part {
-            	name: "background";
-            	type: IMAGE;
-            	mouse_events: 0;
-            	clip_to: "master_clipper";
+			part {
+	    		name: "event_bg";
+            	type: SWALLOW;
             	description {
                		state: "default" 0.0;
-               		rel1 {
-                  		relative: 0.0 0.0;
-                  		offset: 0 0;
+            	   	rel1 {
+                  	relative: 0.0 0.0;
+                  	offset: 0 0;
                		}
                		rel2 {
                   		relative: 1.0 1.0;
                   		offset: -1 -1;
                		}
-               		image.normal: "images/background.png";
             	}
          	}
 
@@ -87,7 +80,7 @@ collections {
 					}					
 				}
 			}
-
+			
          programs {
             program {
                name: "transition,hide,mediaplayer_view";
@@ -143,7 +136,7 @@ collections {
 						offset: 0 0;
 					}
 					rel2 {
-						relative: 1.0 1.0;
+						relative: 2.0 1.0;
 						offset: 0 0;
 					}
 				}
@@ -155,7 +148,7 @@ collections {
 						offset: 0 0;
 					}
 					rel2 {
-						relative: 2.0 1.0;
+						relative: 1.0 1.0;
 						offset: 0 0;
 					}
 
@@ -202,9 +195,80 @@ collections {
                action: STATE_SET "show" 0.0;
                target: "playlist_view";
             }
-         }			
+         }
+         
+//////////              config_dialog            /////////////////////
+		part {
+				name: "config_dialog_view";
+				type: SWALLOW;
+				clip_to: "master_clipper";
+				description {
+					state: "default" 0.0;
+					rel1 {
+						relative: 1.0 0.0;
+						offset: 0 0;
+					}
+					rel2 {
+						relative: 2.0 1.0;
+						offset: 0 0;
+					}
+				}
+				
+				description {
+					state: "show" 0.0;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: 0 0;
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 0 0;
+					}
 
-			
+				}
+		}
+		
+         programs {
+            program {
+               name: "transition,hide,config_dialog_view";
+               signal: "transition,hide,config_dialog_view";
+               action: STATE_SET "default" 0.0;
+               transition: LINEAR TIMEOUT_HIDE;
+               target: "config_dialog_view";
+               after: "transition,hide,config_dialog_view,finished";
+            }
+            program {
+               name: "transition,hide,config_dialog_view,finished";
+               action: SIGNAL_EMIT "transition,hide,config_dialog_view,finished" "";
+            }
+
+            program {
+               name: "transition,show,config_dialog_view";
+               signal: "transition,show,config_dialog_view";
+               action: STATE_SET "show" 0.0;
+               transition: LINEAR TIMEOUT_HIDE;
+               target: "config_dialog_view";
+               after: "transition,show,config_dialog_view,finished";
+            }
+            program {
+               name: "transition,show,config_dialog_view,finished";
+               action: SIGNAL_EMIT "transition,show,config_dialog_view,finished" "";
+            }
+
+            program {
+               name: "hide,config_dialog_view";
+               signal: "hide,config_dialog_view";
+               action: STATE_SET "default" 0.0;
+               target: "config_dialog_view";
+            }
+
+            program {
+               name: "show,config_dialog_view";
+               signal: "show,config_dialog_view";
+               action: STATE_SET "show" 0.0;
+               target: "config_dialog_view";
+            }
+         }			
 		}
 	} 
 }

@@ -1,8 +1,0 @@
-./src/Makefile.in
-./data/Makefile.in
-./data/themes/Makefile.in
-./data/desktop/Makefile.in
-./Makefile.in
-./po/Makefile.in.in
-./po/POTFILES.in
-./config.h.in

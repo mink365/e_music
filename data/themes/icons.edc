@@ -59,3 +59,9 @@ STOCK_ICON("images/icon_music.png",                       "icon/title");
 STOCK_ICON("images/dev_cdda2.png",                       "icon/music");
 STOCK_ICON("images/dev_ipod.png",                       "icon/playing");
 
+STOCK_ICON("images/applications-multimedia.svg",                       "icon/mediascan");
+STOCK_ICON("images/applications-system.svg",                       "icon/setting");
+STOCK_ICON("images/gnome-keybinding-properties.svg",                       "icon/keybinding");
+
+STOCK_ICON("images/edit-undo.png",                       "icon/back");
+
