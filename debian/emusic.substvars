@@ -1,0 +1,2 @@
+shlibs:Depends=libc6 (>= 2.4), libecore-file-svn-05 (>= 0.9.9.063), libedje-svn-05 (>= 0.9.92.063), libeet1 (>= 1.2.3), libeina-svn-05 (>= 0.9.9.063), libelementary-svn-05 (>= 0.6.0.063), libevas-svn-05 (>= 0.9.9.063), libglib2.0-0 (>= 2.16.0), libxmmsclient-ecore (>= 0.6DrMattDestruction), libxmmsclient6 (>= 0.7DrNo)
+misc:Depends=

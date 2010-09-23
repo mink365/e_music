@@ -1,0 +1,15 @@
+Source: emusic
+Section: audiovideo
+Priority: optional
+Maintainer: mink365 <mink365@gmail.com>
+Build-Depends: cdbs, debhelper (>= 6), libeina-dev, libecore-dev, libevas-dev, libedje-dev, libelementary-dev, libxmmsclient-ecore-dev
+Standards-Version: 3.8.2
+Homepage: http://www.enlightenment.org
+
+Package: emusic
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: music player based on xmms2 and efl
+ Music player based on xmms2 and elementary
+ .
+ This package contains the library itself.
