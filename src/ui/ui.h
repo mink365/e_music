@@ -10,5 +10,4 @@
 #include "emusic_playlist_ctl.h"
 #include "emusic_playlist_view.h"
 #include "emusic_slider.h"
-
 #endif

@@ -48,10 +48,11 @@ const char* utils_timeval_to_str( guint timeval, char* buf, guint buf_len )
     min = timeval % 3600;
     sec = min % 60;
     min /= 60;
+
     if( hr > 0 )
-        g_snprintf( buf, buf_len, "%.2u:%.2u:%.2u", hr, min, sec );
+        g_snprintf( buf, buf_len, "%u:%u:%.2u", hr, min, sec );
     else
-        g_snprintf( buf, buf_len, "%.2u:%.2u", min, sec );
+        g_snprintf( buf, buf_len, "%u:%.2u", min, sec );
 
     return buf;
 }

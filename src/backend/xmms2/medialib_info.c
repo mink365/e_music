@@ -24,16 +24,17 @@ static	int _get_track_properties (xmmsv_t *value, TrackProperties *properties);
 static int _on_track_info_loaded(xmmsv_t* value, Emu_Media_Info *emu_mdinfo);
 
 Emu_Media_Info *
-emusic_medialib_info_get(xmmsc_connection_t *conn, int id)
+emusic_medialib_info_get(int id)
 {
 	Emu_Media_Info *emu_mdinfo;
-	emu_mdinfo = E_MUSIC_NEW(Emu_Media_Info, 1);
+	emu_mdinfo = E_MUSIC_NEW(Emu_Media_Info);
 
 	xmmsc_result_t *res;
 	xmmsv_t *return_value;
-	res = xmmsc_medialib_get_info(conn, id);
+	res = xmmsc_medialib_get_info(em->conn, id);
 	xmmsc_result_wait (res);
 	return_value = xmmsc_result_get_value (res);
+
 	_on_track_info_loaded(return_value, emu_mdinfo);
 
 
@@ -47,7 +48,7 @@ emusic_medialib_info_get(xmmsc_connection_t *conn, int id)
 
 
 int 
-emusic_media_scan(xmmsc_connection_t *conn, char *playlist, char *file)
+emusic_media_scan(char *playlist, char *file)
 {
 	xmmsc_result_t *res;
     char *url;

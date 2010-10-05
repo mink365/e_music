@@ -3,26 +3,27 @@
 #include <xmmsclient/xmmsclient.h>
 #include "emusic_playlist_ctl.h"
 
+typedef struct _Smart_Data
+{
+	Evas_Object *repeat_btn;
+	Evas_Object *shuffle_btn;
+
+	int repeat_mode;
+	int shuffle_mode;
+} Smart_Data;
+static Smart_Data *sd;
+
 static void _button_clicked_playlist_cb(void *data, Evas_Object *obj, void *event_info);
 static void _button_clicked_repeat_cb(void *data, Evas_Object *obj, void *event_info);
 static void _button_clicked_shuffle_cb(void *data, Evas_Object *obj, void *event_info);
 
-typedef struct _Smart_Data Smart_Data;
-
-struct _Smart_Data
-{
-	Evas_Object *repeat_btn;
-	Evas_Object *shuffle_btn;
-};
-
-
 int 
 emusic_playlist_ctl_creat(Em_Smart_Data *em)
 {
-	Evas_Object *obj, *playlist_ctl_box, *ic, *btn;
+	Evas_Object *obj, *box, *ic, *bt;
 
-	Smart_Data *sd = calloc(1, sizeof(Smart_Data));
-	if (!sd) return;
+	sd = calloc(1, sizeof(Smart_Data));
+	if (!sd) return FALSE;
 
 	obj = edje_object_add(em->evas);
 	if (!edje_object_file_set(obj, emusic_config_theme_get(), "widget/playlist_ctl"))
@@ -34,55 +35,76 @@ emusic_playlist_ctl_creat(Em_Smart_Data *em)
     	evas_object_del(obj);
     	return NULL;
 	}
-	em->playlist_ctl.obj = obj;
-	//evas_object_smart_data_set(em->playlist_ctl, sd);
+	em->playlist_ctl = obj;
 
-	playlist_ctl_box = elm_box_add(obj);
-	elm_box_homogenous_set(playlist_ctl_box, 0);
-	elm_box_horizontal_set(playlist_ctl_box, 1);
-
+	box = elm_box_add(obj);
+	elm_box_homogenous_set(box, 0);
+	elm_box_horizontal_set(box, 1);
 
 	ic = elm_icon_add(obj);                                    
-	elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_playlist"); 
-	btn = elm_button_add(obj);
-	evas_object_smart_callback_add(btn, "clicked", _button_clicked_playlist_cb, em);
-	elm_button_icon_set(btn, ic);         
-	elm_box_pack_end(playlist_ctl_box, btn);
-	evas_object_show(btn);
+	elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_playlist");
+	bt = elm_button_add(obj);
+	evas_object_smart_callback_add(bt, "clicked", _button_clicked_playlist_cb, em);
+	elm_button_icon_set(bt, ic);         
+	elm_box_pack_end(box, bt);
+	evas_object_show(bt);
 	evas_object_show(ic);
 	
 	ic = elm_icon_add(obj);                                    
 	elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_repeat_off"); 
-	btn = elm_button_add(obj);
-	evas_object_smart_callback_add(btn, "clicked", _button_clicked_repeat_cb, em);
-	elm_button_icon_set(btn, ic);
-	elm_box_pack_end(playlist_ctl_box, btn);
-	evas_object_show(btn);
+	bt = elm_button_add(obj);
+	evas_object_smart_callback_add(bt, "clicked", _button_clicked_repeat_cb, em);
+	elm_button_icon_set(bt, ic);
+	elm_box_pack_end(box, bt);
+	evas_object_show(bt);
 	evas_object_show(ic);
-    em->playlist_ctl.repeat_btn = btn;
+    sd->repeat_btn = bt;
 
 	ic = elm_icon_add(obj);                                    
 	elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_shuffle_off"); 
-	btn = elm_button_add(obj);
-	evas_object_smart_callback_add(btn, "clicked", _button_clicked_shuffle_cb, em);
-	elm_button_icon_set(btn, ic);
-	elm_box_pack_end(playlist_ctl_box, btn);
-	evas_object_show(btn);
+	bt = elm_button_add(obj);
+	evas_object_smart_callback_add(bt, "clicked", _button_clicked_shuffle_cb, em);
+	elm_button_icon_set(bt, ic);
+	elm_box_pack_end(box, bt);
+	evas_object_show(bt);
 	evas_object_show(ic);
-    em->playlist_ctl.shuffle_btn = btn;
+    sd->shuffle_btn = bt;
 
-	edje_object_part_swallow(obj, "box.swallow", playlist_ctl_box);
-	evas_object_show(playlist_ctl_box);
+	edje_object_part_swallow(obj, "box.swallow", box);
+	evas_object_show(box);
 
-	return 1;
+	return TRUE;
+}
+
+int
+emusic_playlist_ctl_repeat(int mode)
+{
+	Evas_Object *ic;
+	ic = elm_button_icon_get(sd->repeat_btn);
+	sd->repeat_mode = mode;
+	switch(mode)
+	{
+		case REPEAT_ALL:
+			elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_repeat_all");
+		break;
+		case REPEAT_NONE:
+			elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_repeat_off");
+		break;
+		case REPEAT_CURRENT:
+			elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_repeat_once");
+		break;
+		default:
+			elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_repeat_off");
+		break;
+	}
+	return TRUE;
 }
 
 	static void
 _button_clicked_playlist_cb(void *data, Evas_Object *obj, void *event_info)
 {
-	//emusic_update_play_list(em->playlist_show);
-	emusic_playlist_update(em->conn, em->main_playlist);
-	emusic_switch_to_playlist();
+	emusic_playlist_update(em->main_playlist);
+	emusic_playlist_view_new(_("Now playing"));
 }
 
 	static void
@@ -90,22 +112,22 @@ _button_clicked_repeat_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	Em_Smart_Data *em = data;
 	
-	if (em->repeat_mode == REPEAT_ALL)	
+	if (sd->repeat_mode == REPEAT_ALL)	
 	{
-		emusic_playlist_set_repeat_all(em->conn, FALSE);
+		emusic_playlist_set_repeat_all(FALSE);
 	}
 	else
 	{
-		if (em->repeat_mode == REPEAT_CURRENT)
+		if (sd->repeat_mode == REPEAT_CURRENT)
 		{
-			emusic_playlist_set_repeat_one(em->conn, FALSE);
-			emusic_playlist_set_repeat_all(em->conn, TRUE);
+			emusic_playlist_set_repeat_one(FALSE);
+			emusic_playlist_set_repeat_all(TRUE);
 		
 		}
 		else
 		{
 			/* now we repeat none so go repeat one */
-			emusic_playlist_set_repeat_one(em->conn, TRUE);
+			emusic_playlist_set_repeat_one(TRUE);
 		}
 	}
 
@@ -117,24 +139,21 @@ _button_clicked_shuffle_cb(void *data, Evas_Object *obj, void *event_info)
 	Evas_Object *ic;
 	Em_Smart_Data *em = data;
 
+	ic = elm_button_icon_get(sd->shuffle_btn);
 	/* we have no broadcast so We have to do it our self */	
-	if( em->shuffle_mode == XMMS_PLAYLIST_CHANGED_SHUFFLE ){
-		emusic_playlist_sort( em->conn, NULL, NULL );
+	if( sd->shuffle_mode == PLAYLIST_CHANGED_SHUFFLE ){
+		emusic_playlist_sort( NULL, NULL );
 
-		ic = elm_icon_add(em->mediaplayer);                                    
 		elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_shuffle_off"); 
-		elm_button_icon_set(obj, ic);
 
-		em->shuffle_mode = XMMS_PLAYLIST_CHANGED_SORT;
+		sd->shuffle_mode = PLAYLIST_CHANGED_SORT;
 	}
 	else{
-		emusic_playlist_shuffle( em->conn, NULL );
+		emusic_playlist_shuffle( NULL );
 
-		ic = elm_icon_add(em->mediaplayer);                                    
 		elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_shuffle_on"); 
-		elm_button_icon_set(obj, ic);
 
-		em->shuffle_mode = XMMS_PLAYLIST_CHANGED_SHUFFLE;
+		sd->shuffle_mode = PLAYLIST_CHANGED_SHUFFLE;
 	}
 }
 

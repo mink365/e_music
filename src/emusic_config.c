@@ -10,7 +10,7 @@
 Eet_Data_Descriptor *edd = NULL;
 
 
-	static void
+static void
 _config_descriptor_init(void)
 {
 	Eet_Data_Descriptor_Class eddc;
@@ -45,7 +45,7 @@ _config_descriptor_init(void)
 	}
 }
 
-	static Emu_Config *
+static Emu_Config *
 _config_load(const char *filename)
 {
 	Eet_File *ef = NULL;
@@ -63,7 +63,7 @@ _config_load(const char *filename)
 	}
 }
 
-	static void
+static void
 _config_save(const Emu_Config *emu_config, const char *filename)
 {
 	Eet_File *ef = NULL;
@@ -88,12 +88,12 @@ _config_save(const Emu_Config *emu_config, const char *filename)
 }
 
 
-	static Emu_Config *
+static Emu_Config *
 _config_new(void)
 {
 	Emu_Config *emu_config = NULL;
 
-	emu_config = E_MUSIC_NEW(Emu_Config, 1);
+	emu_config = E_MUSIC_NEW(Emu_Config);
 	if(!emu_config)
 	{
 		ERR("Can't calloc Emu_Config");
@@ -150,7 +150,7 @@ _config_new(void)
 }
 
 
-	static void
+static void
 _config_free(const Emu_Config *emu_config)
 {
 	/* should we del all of string?? */
@@ -164,7 +164,7 @@ _config_free(const Emu_Config *emu_config)
 }
 
 
-	void
+void
 emusic_config_init (const char *file)
 {
 	char filename[4096];
@@ -185,7 +185,7 @@ emusic_config_init (const char *file)
 
 }
 
-	void
+void
 emusic_config_shutdown (void)
 {
 	/* save current configuration to file */
@@ -198,7 +198,7 @@ emusic_config_shutdown (void)
 /*                                Theme                                     */
 /****************************************************************************/
 
-	void
+void
 emusic_config_load_theme (void)
 {
 	if (!emusic_config->theme)
@@ -217,13 +217,13 @@ err_theme:
 	CRITICAL("couldn't load theme file!");
 }
 
-	const char *
+const char *
 emusic_config_theme_get()
 {
 	return emusic_config->theme_file;
 }
 
-	const char *
+const char *
 emusic_config_theme_file_get(const char *s)
 {
 	char tmp[4096];

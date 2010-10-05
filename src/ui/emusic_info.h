@@ -2,7 +2,7 @@
 #define __E_MUSIC_INFO_H__
 
 int emusic_info_creat(Em_Smart_Data *em);
-void emusic_info_update(Evas_Object *obj, char *artist, char *album, char *title);
+void emusic_info_update(char *artist, char *album, char *title);
 
 //<-----------
 //emusic_config_theme_get

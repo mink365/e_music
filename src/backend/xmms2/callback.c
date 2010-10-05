@@ -4,74 +4,65 @@
 #include <xmmsclient/xmmsclient-ecore.h>
 #include <glib.h>
 
-//#include "../../ui/ui.h"
 #include "callback.h"
 
 extern Em_Smart_Data  *em;
 
-	static gint 
+static int 
 _on_server_quit (xmmsv_t *val, void* data) 
 {
-	xmmsc_unref (em->conn);
+	xmmsc_unref(em->conn);
 	ERR( "Server Quit" );
 	em->conn = NULL;
 	return TRUE;
 }
 
-	static void 
+static void 
 _on_server_disconnect (void *data)
 {
+	xmmsc_unref(em->conn);
 	ERR( "Server gone" );
+	em->conn = NULL;
 }
 
 
-	static int 
+static int 
 _on_playlist_content_changed( xmmsv_t* value, void* user_data )
 {
-
 	emusic_playlist_update(em->conn, em->main_playlist);
 
 	return TRUE;
 }
 
 
-	static int 
+static int 
 _on_playback_status_changed( xmmsv_t *value, void *data )
 {	
-	Evas_Object *ic;
-
-	//--------设定playback_status
-	if ( !xmmsv_get_int(value, &(em->playback_status)) )
+	int playback_status;
+	if (!xmmsv_get_int(value, &(playback_status)))
 	{
-		em->playback_status = XMMS_PLAYBACK_STATUS_STOP;
-		return TRUE;
+		playback_status = XMMS_PLAYBACK_STATUS_STOP;
+		emusic_play_ctl_update(PLAYBACK_STATUS_STOP);
+		return FALSE;
 	}
+	INF("%d", playback_status);
 
-	switch( em->playback_status )
+	switch(playback_status)
 	{
 		case XMMS_PLAYBACK_STATUS_PLAY:
-			{
-				xmmsc_result_t* res2;
-
-				//FIXME
-				INF("Switch to play\n");
-
-				break;
-			}
+			emusic_play_ctl_update(PLAYBACK_STATUS_PLAY);
+			break;
 		case XMMS_PLAYBACK_STATUS_STOP:
-			INF("Switch to STOP");
-			
-
+			emusic_play_ctl_update(PLAYBACK_STATUS_STOP);
+			break;
 		case XMMS_PLAYBACK_STATUS_PAUSE:
-			INF("Switch to pause\n");
-
+			emusic_play_ctl_update(PLAYBACK_STATUS_PAUSE);
 			break;
 	}
-
 	return TRUE;
 }
 
-	static int 
+static int 
 _on_playlist_loaded(xmmsv_t* value, gpointer user_data)
 {
 	char* name;
@@ -84,13 +75,13 @@ _on_playlist_loaded(xmmsv_t* value, gpointer user_data)
 		/* invalidate currenyly played track id. */
 		em->cur_track_id = 0;
 		
-		emusic_playlist_update(em->conn, em->main_playlist);
+		emusic_playlist_update(em->main_playlist);
 	}
 
 	return TRUE;
 }
 
-	static int 
+static int 
 _on_playback_playtime_changed( xmmsv_t* value, void* data )
 {	
 	int32_t time;
@@ -100,53 +91,38 @@ _on_playback_playtime_changed( xmmsv_t* value, void* data )
 
 	time /= 1000;
 
-	//emusic_slider_update(em->slider, time, NULL);
+	emusic_slider_update(FALSE, time);
 
-	if( em->slider.cur_track_duration > 0 && em->slider.slider_runing == FALSE ) {
-		em->slider.playtime = time;
-		//INF("%f", em->slider.proportion);
-		emusic_slider_update(em->slider, em->slider.cur_track_duration, em->slider.playtime);  ////////ERRS???????
-		//elm_slider_value_set(em->slider.slider, proportion);
-	}
 	return TRUE;
 }
 
-	static int 
+static int 
 _on_playback_cur_track_changed( xmmsv_t* value, void* user_data )
 {
 	if( xmmsv_get_int(value, &(em->cur_track_id)) && (em->cur_track_id) != 0)
 	{
 		Emu_Media_Info *mdinfo;
-		mdinfo = emusic_medialib_info_get(em->conn, em->cur_track_id);
+		mdinfo = emusic_medialib_info_get(em->cur_track_id);
 
 		if (mdinfo != NULL)
 		{
-			em->slider.cur_track_duration = mdinfo->duration;
-
-			emusic_cover_art_update(em->cover_art.obj, mdinfo->cover_path);
-			emusic_info_update(em->info.obj, mdinfo->artist, mdinfo->album, mdinfo->title);
-			emusic_slider_update(em->slider.obj, em->slider.cur_track_duration, 0.0);
-
-			/*FIXME: free mdinfo???*/
-			free(mdinfo);
+			emusic_cover_art_update(mdinfo->cover_path);
+			emusic_info_update(mdinfo->artist, mdinfo->album, mdinfo->title);
+			emusic_slider_update(mdinfo->duration, FALSE);
 		}
+		free(mdinfo);
 	}
 	else
 	{
 		xmmsc_result_t *result;
 		xmmsv_t *return_value;
-		int hh;
+		int pos;
 	
 		/*    get current track ID    */
 		result = xmmsc_playlist_current_pos (em->conn, XMMS_ACTIVE_PLAYLIST);
 		xmmsc_result_wait (result);
 		return_value = xmmsc_result_get_value (result);
-//		xmmsc_result_wait (return_value);
-		xmmsv_get_int (return_value, hh);
-
-		/* FIXME: Cann't get the pos id??*/
-//    	xmmsc_result_notifier_set (result, bc_playlist_current_pos, NULL);
-//    	xmmsc_result_unref (result);
+		xmmsv_get_int (return_value, pos);
 		
 	}
 
@@ -171,7 +147,6 @@ _on_collection_changed( xmmsv_t* dict, void* user_data )
 	xmmsv_dict_get (dict, "type", &int_value);	
 	xmmsv_get_int( int_value, &type );
 
-	/* g_debug("name=%s, ns=%s, type=%d", name, ns, type); */
 
 	/* currently we only care about playlists */
 	if( ns && strcmp(ns, "Playlists") == 0 )
@@ -179,7 +154,7 @@ _on_collection_changed( xmmsv_t* dict, void* user_data )
 		switch(type)
 		{
 			case XMMS_COLLECTION_CHANGED_ADD:
-				//            add_playlist_to_menu( name, TRUE );
+				//   add_playlist_to_menu( name, TRUE );
 				break;
 			case XMMS_COLLECTION_CHANGED_UPDATE:
 				break;
@@ -187,7 +162,7 @@ _on_collection_changed( xmmsv_t* dict, void* user_data )
 				// rename_playlist( name, newname );
 				break;
 			case XMMS_COLLECTION_CHANGED_REMOVE:
-				//            remove_playlist_from_menu( name );
+				//  remove_playlist_from_menu( name );
 				break;
 		}
 	}
@@ -227,13 +202,10 @@ _on_media_lib_entry_changed(xmmsv_t* value, void* user_data)
 	return TRUE;
 }
 
-	static void 
+static void 
 _config_changed_foreach(const char *key, xmmsv_t *value, void* user_data)
 {
-	Evas_Object *ic;
-
-	ic = elm_icon_add(em->mediaplayer);
-
+	INF("config changed %s", key);
 	if( strncmp( key, "playlist.", 9) == 0 )
 	{
 		const char* val;
@@ -243,39 +215,28 @@ _config_changed_foreach(const char *key, xmmsv_t *value, void* user_data)
 		{
 			if( val[0] == '1' )
 			{
-				em->repeat_mode = REPEAT_CURRENT;
-				elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_repeat_once");
+				emusic_playlist_ctl_repeat(REPEAT_CURRENT);
 			}
 			else
 			{
-				if( em->repeat_mode == REPEAT_CURRENT )
-				{
-					em->repeat_mode = REPEAT_NONE;
-					elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_repeat_off");
-				}
+					emusic_playlist_ctl_repeat(REPEAT_NONE);
 			}
 		}
 		else if( strcmp( key + 9, "repeat_all") == 0 )
 		{
 			if( val[0] == '1' )
 			{
-				em->repeat_mode = REPEAT_ALL;
-				elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_repeat_all");
+				emusic_playlist_ctl_repeat(REPEAT_ALL);
 			}
 			else
 			{
-				if( em->repeat_mode == REPEAT_ALL )
-				{	
-					em->repeat_mode = REPEAT_NONE;
-					elm_icon_file_set(ic, emusic_config_theme_get(), "icon/mp_repeat_off");
-				}
+				emusic_playlist_ctl_repeat(REPEAT_NONE);
 			}
 		}
-		elm_button_icon_set(em->playlist_ctl.repeat_btn, ic);
 	}
 }
 
-	static int 
+static int 
 _on_configval_changed(xmmsv_t* value, void* user_data)
 {
 	xmmsv_dict_foreach( value, _config_changed_foreach, NULL );
@@ -284,8 +245,8 @@ _on_configval_changed(xmmsv_t* value, void* user_data)
 
 
 
-	int 
-emusic_setup_callback(Em_Smart_Data *em)
+int 
+emusic_callback_setup(Em_Smart_Data *em)
 {
 	xmmsc_result_t *res;
 
@@ -293,6 +254,7 @@ emusic_setup_callback(Em_Smart_Data *em)
 	/* play status */
 	res = xmmsc_playback_status(em->conn);
 	xmmsc_result_notifier_set_and_unref(res, _on_playback_status_changed, NULL);
+
 	XMMS_CALLBACK_SET( em->conn, xmmsc_broadcast_playback_status, _on_playback_status_changed, NULL );
 
 	/* server quit */
@@ -321,7 +283,7 @@ emusic_setup_callback(Em_Smart_Data *em)
 	/* media lib */
 	XMMS_CALLBACK_SET( em->conn, xmmsc_broadcast_medialib_entry_changed, _on_media_lib_entry_changed, NULL );
 
-	//    XMMS_CALLBACK_SET( em->conn, xmmsc_broadcast_collection_changed, _on_collection_changed, NULL );
+	//XMMS_CALLBACK_SET( em->conn, xmmsc_broadcast_collection_changed, _on_collection_changed, NULL );
 
 	/* config values */
 	XMMS_CALLBACK_SET( em->conn, xmmsc_broadcast_config_value_changed, _on_configval_changed, NULL );
@@ -329,14 +291,25 @@ emusic_setup_callback(Em_Smart_Data *em)
 
 	/*      INIT the repeat and playlist mode       */
 	emusic_playlist_sort( em->conn, em->main_playlist, NULL );
-	em->shuffle_mode = XMMS_PLAYLIST_CHANGED_SORT;
 	
 	xmmsc_config_set_value(em->conn, "playlist.repeat_one", "0");
 	xmmsc_config_set_value(em->conn, "playlist.repeat_all", "0");
 
-	
-
-	return 1;
+	return TRUE;
 }
 
+int 
+emusic_callback_update(Em_Smart_Data *em)
+{
+	xmmsc_result_t *res;
 
+	/* play status */
+	res = xmmsc_playback_status(em->conn);
+	xmmsc_result_notifier_set_and_unref(res, _on_playback_status_changed, NULL);
+
+	/* current track info */
+	res = xmmsc_playback_current_id(em->conn);
+	xmmsc_result_notifier_set_and_unref( res, _on_playback_cur_track_changed, NULL );
+
+	return TRUE;
+}

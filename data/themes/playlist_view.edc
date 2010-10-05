@@ -1,6 +1,10 @@
 
 group {
 	name: "main/playlist_view";
+	images {
+		image: "images/vgrad_vdark.png" COMP;
+		image: "images/grill_dark_tiny_pattern.png" COMP;
+	}
 
 	parts{
 		part{
@@ -19,6 +23,39 @@ group {
 				}
 			}
 		}
+		part {
+            name: "background_img";
+            type: IMAGE;
+           	mouse_events: 0;
+            clip_to: "master_clipper";
+            description {
+            	state: "default" 0.0;
+               	image.normal: "images/vgrad_vdark.png";
+				fill {
+		  			smooth: 0;
+					size {
+		    	 		relative: 0 1.0;
+		     			offset: 36 0;
+		  			}
+				}
+			}
+         }
+		part {
+            name: "grill";
+            type: IMAGE;
+           	mouse_events: 0;
+            clip_to: "master_clipper";
+            description {
+            	state: "default" 0.0;
+               	image.normal: "images/grill_dark_tiny_pattern.png";
+				fill {
+					size {
+		    	 		relative: 0 0;
+		     			offset: 144 144;
+		  			}
+				}
+			}
+         }
 
 		part{
 			name: "playlist_view.swallow";

@@ -1,17 +1,13 @@
 
 group {
 		name: "main/mediaplayer_view";
-//		max, 800 400;
-
 
 		images {
 	   		image: "images/background.png" COMP;
 	   		image: "images/controller-background.png" COMP;
-	   		image: "images/bg_music.jpg" COMP;
 		}
 
 		parts {
-			
 			part{
 				name: "master_clipper";
 				type: RECT;
@@ -36,7 +32,6 @@ group {
             	mouse_events: 0;
             	description {
                	state: "default" 0.0;
-//				min, 800 480;
                	rel1 {
                   	relative: 0.0 0.0;
                		}
@@ -65,8 +60,8 @@ group {
 			
 //------------------playlist
 			part {
-				name, "playlist_ctl.area";
-				type, RECT;
+				name, "playlist_ctl.swallow";
+				type, SWALLOW;
 				clip_to: "master_clipper";
 				description {
 					state, "default" 0.0;
@@ -78,29 +73,11 @@ group {
 					color: 0 0 0 0;
 				}  
 			}
-			
-			part {
-				name, "playlist_ctl.swallow";
-				type, SWALLOW;
-				clip_to: "master_clipper";
-				mouse_events: 1;
-				description {
-					state, "default" 0.0;
-
-            		rel1.to: "playlist_ctl.area";
-            		rel1.offset: 2 2;
-
-            		rel2.to: "playlist_ctl.area";
-            		rel2.offset: -2 -2;
-				}
-			}
-
-
 //-------------------------info-----------------
 
 			part {
-				name, "songs_ifo.area";
-				type, RECT;
+				name, "songs_ifo.swallow";
+				type, SWALLOW;
 				clip_to: "master_clipper";
 				description {
 					state, "default" 0.0;
@@ -111,29 +88,11 @@ group {
 					
 					color: 0 0 0 0;
 				}  
-			}
-			
-			part {
-				name, "songs_ifo.swallow";
-				type, SWALLOW;
-				clip_to: "master_clipper";
-				mouse_events: 1;
-				description {
-					state, "default" 0.0;
-
-            		rel1.to: "songs_ifo.area";
-            		rel1.offset: 2 2;
-
-            		rel2.to: "songs_ifo.area";
-            		rel2.offset: -2 -2;
-				}
-			}
-			
-			
+			}			
 ///////////--------------------setting------------------////////////
 			part {
-				name, "setting_bt.area";
-				type, RECT;
+				name, "setting_bt.swallow";
+				type, SWALLOW;
 				clip_to: "master_clipper";
 				description {
 					state, "default" 0.0;
@@ -143,24 +102,7 @@ group {
 					
 					color: 0 0 0 0;
 				}  
-			}
-			
-			part {
-				name, "setting_bt.swallow";
-				type, SWALLOW;
-				clip_to: "master_clipper";
-				mouse_events: 1;
-				description {
-					state, "default" 0.0;
-
-            		rel1.to: "setting_bt.area";
-            		rel1.offset: 2 2;
-
-            		rel2.to: "setting_bt.area";
-            		rel2.offset: -2 -2;
-				}
 			}			
-			
 //-------------------------------controller---------------------------
 			part {
 				name: "control_bkg";
@@ -175,11 +117,10 @@ group {
 					}
 				}			
 			}
-
 //--------------play_pause
 			part {
-				name, "play_ctl.area";
-				type, RECT;
+				name, "play_ctl.swallow";
+				type, SWALLOW;
 				clip_to: "master_clipper";
 				description {
 					state, "default" 0.0;
@@ -188,27 +129,10 @@ group {
 					color: 0 0 0 0;
 				}  
 			}
-			
-			part {
-				name, "play_ctl.swallow";
-				type, SWALLOW;
-				clip_to: "master_clipper";
-				mouse_events: 1;
-				description {
-					state, "default" 0.0;
-
-            		rel1.to: "play_ctl.area";
-            		rel1.offset: 2 2;
-
-            		rel2.to: "play_ctl.area";
-            		rel2.offset: -2 -2;
-				}
-			}
 //------------------------------------
-
 			part {
-				name, "slider.area";
-				type, RECT;
+				name, "slider.swallow";
+				type, SWALLOW;
 				clip_to: "master_clipper";
 				description {
 					state, "default" 0.0;
@@ -218,23 +142,6 @@ group {
 					color: 0 0 0 0;
 				}  
 			}
-			
-			part {
-				name, "slider.swallow";
-				type, SWALLOW;
-				clip_to: "master_clipper";
-				mouse_events: 1;
-				description {
-					state, "default" 0.0;
-
-            		rel1.to: "slider.area";
-            		rel1.offset: 1 1;
-
-            		rel2.to: "slider.area";
-            		rel2.offset: -1 -1;
-				}
-			}
-
 ///////////////-----------------time lables--------
 			part {
 				name, "text.duration.label";

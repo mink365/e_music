@@ -31,10 +31,6 @@ group {                                             \
          }                                                              \
       }                                                                 \
    }
-
-STOCK_ICON("images/bg_music.jpg",                    "icon/cover");
-
-
 STOCK_ICON("images/mp_forward.png",                    "icon/mp_forward");
 STOCK_ICON("images/mp_next.png",                       "icon/mp_next");
 STOCK_ICON("images/mp_play.png",                       "icon/mp_play");
@@ -52,16 +48,17 @@ STOCK_ICON("images/ic_mp_repeat_once_btn.png",                       "icon/mp_re
 STOCK_ICON("images/ic_mp_shuffle_on_btn.png",                       "icon/mp_shuffle_on");
 STOCK_ICON("images/ic_mp_shuffle_off_btn.png",                       "icon/mp_shuffle_off");
 
-STOCK_ICON("images/icon_album.png",                       "icon/album");
-STOCK_ICON("images/icon_artist.png",                       "icon/artist");
-STOCK_ICON("images/icon_music.png",                       "icon/title");
+STOCK_ICON("images/ic_tab_albums_unselected.png",                       "icon/album");
+STOCK_ICON("images/ic_tab_artists_unselected.png",                       "icon/artist");
+STOCK_ICON("images/ic_tab_songs_unselected.png",                       "icon/songs");
+STOCK_ICON("images/ic_tab_playlists_unselected.png",                       "icon/playlist");
 
-STOCK_ICON("images/dev_cdda2.png",                       "icon/music");
-STOCK_ICON("images/dev_ipod.png",                       "icon/playing");
+STOCK_ICON("images/ic_category_music_song.png",           "icon/music");
+STOCK_ICON("images/indicator_ic_mp_playing_list.png",     "icon/playing");
+STOCK_ICON("images/no_cover.png",                         "icon/no_cover");
 
-STOCK_ICON("images/applications-multimedia.svg",                       "icon/mediascan");
+STOCK_ICON("images/applications-multimedia.svg",                   "icon/media");
 STOCK_ICON("images/applications-system.svg",                       "icon/setting");
-STOCK_ICON("images/gnome-keybinding-properties.svg",                       "icon/keybinding");
-
-STOCK_ICON("images/edit-undo.png",                       "icon/back");
+STOCK_ICON("images/gnome-keybinding-properties.svg",               "icon/keybinding");
+STOCK_ICON("images/icon_theme.png",                                 "icon/themes");
 

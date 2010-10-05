@@ -6,20 +6,21 @@ static void _button_clicked_album_cb(void *data, Evas_Object *obj, void *event_i
 static void _button_clicked_artist_cb(void *data, Evas_Object *obj, void *event_info);
 static void _button_clicked_title_cb(void *data, Evas_Object *obj, void *event_info);
 
-
-typedef struct _Smart_Data Smart_Data;
-
-struct _Smart_Data
+typedef struct _Smart_Data
 {
   Evas_Object *artist_show;
   Evas_Object *album_show;
   Evas_Object *title_show;
-};
+} Smart_Data;
+static Smart_Data *sd;
 
 int 
 emusic_info_creat(Em_Smart_Data *em)
 {
 	Evas_Object *obj, *info_box, *ic, *btn;
+
+	sd = calloc(1, sizeof(Smart_Data));
+	if (!sd) return FALSE;
 	
 	obj = edje_object_add(em->evas);
 	if (!edje_object_file_set(obj, emusic_config_theme_get(), "widget/info"))
@@ -31,7 +32,7 @@ emusic_info_creat(Em_Smart_Data *em)
     	evas_object_del(obj);
     	return NULL;
 	}
-	em->info.obj = obj;
+	em->info = obj;
 
 	info_box = elm_box_add(obj);
 
@@ -41,15 +42,15 @@ emusic_info_creat(Em_Smart_Data *em)
 	evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	evas_object_smart_callback_add(btn, "clicked", _button_clicked_artist_cb, em);
 	elm_button_icon_set(btn, ic);
-	elm_button_label_set(btn, "Artist");            
+	elm_button_label_set(btn, "Artist");
 	elm_object_style_set(btn, "simple");
 	elm_box_pack_end(info_box, btn);
-    em->info.artist_show = btn;
+    sd->artist_show = btn;
 	evas_object_show(btn);
 	evas_object_show(ic);
 
 	ic = elm_icon_add(obj);                                    
-	elm_icon_file_set(ic, emusic_config_theme_get(), "icon/album"); 
+	elm_icon_file_set(ic, emusic_config_theme_get(), "icon/album");
 	btn = elm_button_add(obj);
 	evas_object_smart_callback_add(btn, "clicked", _button_clicked_album_cb, em);
 	evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -57,12 +58,12 @@ emusic_info_creat(Em_Smart_Data *em)
 	elm_button_label_set(btn, "Album");            
 	elm_object_style_set(btn, "simple");
 	elm_box_pack_end(info_box, btn);
-    em->info.album_show = btn;
+    sd->album_show = btn;
 	evas_object_show(btn);
 	evas_object_show(ic);
 
 	ic = elm_icon_add(obj);                                    
-	elm_icon_file_set(ic, emusic_config_theme_get(), "icon/title"); 
+	elm_icon_file_set(ic, emusic_config_theme_get(), "icon/songs");
 	btn = elm_button_add(obj);	
 	evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	evas_object_smart_callback_add(btn, "clicked", _button_clicked_title_cb, em);
@@ -70,11 +71,11 @@ emusic_info_creat(Em_Smart_Data *em)
 	elm_button_label_set(btn, "Title");            
 	elm_object_style_set(btn, "simple");
 	elm_box_pack_end(info_box, btn);
-    em->info.title_show = btn;
+    sd->title_show = btn;
 	evas_object_show(btn);
 	evas_object_show(ic);
 
-	edje_object_part_swallow(em->info.obj, "box.swallow", info_box);
+	edje_object_part_swallow(em->info, "box.swallow", info_box);
 	evas_object_show(info_box);
 
 	return 1;
@@ -82,11 +83,14 @@ emusic_info_creat(Em_Smart_Data *em)
 }
 
 
-void emusic_info_update(Evas_Object *obj, char *artist, char *album, char *title)
+void emusic_info_update(char *artist, char *album, char *title)
 {
-	elm_button_label_set(em->info.artist_show, artist);
-	elm_button_label_set(em->info.album_show, album);
-	elm_button_label_set(em->info.title_show, title);
+	if (!sd)
+		return;
+
+	elm_button_label_set(sd->artist_show, artist);
+	elm_button_label_set(sd->album_show, album);
+	elm_button_label_set(sd->title_show, title);
 }
 
 
@@ -99,18 +103,15 @@ _button_clicked_title_cb(void *data, Evas_Object *obj, void *event_info)
 	strcat(buf, "*");
 	strcat(buf, "'");
 
-	emusic_collections_creat( em->conn, buf );
+	emusic_collections_creat(buf );
 
-	emusic_mlib_browse_update_artists();
+	emusic_playlist_clear(em->coll_playlist);
 
-	emusic_playlist_clear(em->conn, em->coll_playlist);
+	emusic_collections_add_to_playlist(em->coll_playlist);
 
-	emusic_collections_add_to_playlist( em->conn, em->coll_playlist);
+	emusic_playlist_update(em->main_playlist);
 
-	emusic_playlist_update(em->conn, em->main_playlist);
-
-	edje_object_signal_emit(em->edje, "transition,hide,mediaplayer_view", "");
-	edje_object_signal_emit(em->edje, "transition,show,playlist_view", "");
+	emusic_playlist_view_new(_("All songs"));
 
 }
 
@@ -126,15 +127,15 @@ _button_clicked_artist_cb(void *data, Evas_Object *obj, void *event_info)
 	strcat(buf, artist);
 	strcat(buf, "'");
 
-	emusic_collections_creat ( em->conn, buf );
+	emusic_collections_creat (buf );
 
-	emusic_playlist_clear(em->conn, em->coll_playlist);
+	emusic_playlist_clear(em->coll_playlist);
 
-	emusic_collections_add_to_playlist( em->conn, em->coll_playlist);
+	emusic_collections_add_to_playlist(em->coll_playlist);
 
-	emusic_playlist_update(em->conn, em->main_playlist);
+	emusic_playlist_update(em->main_playlist);
 
-	emusic_switch_to_playlist();
+	emusic_playlist_view_new (artist);
 
 }
 
@@ -150,14 +151,14 @@ _button_clicked_album_cb(void *data, Evas_Object *obj, void *event_info)
 	strcat(buf, album);
 	strcat(buf, "'");
 
-	emusic_collections_creat ( em->conn, buf );
+	emusic_collections_creat (buf );
 
-	emusic_playlist_clear(em->conn, em->coll_playlist);
+	emusic_playlist_clear(em->coll_playlist);
 
-	emusic_collections_add_to_playlist( em->conn, em->coll_playlist);
+	emusic_collections_add_to_playlist(em->coll_playlist);
 
-	emusic_playlist_update(em->conn, em->main_playlist);
+	emusic_playlist_update(em->main_playlist);
 
-	emusic_switch_to_playlist();
+	emusic_playlist_view_new (album);
 
 }

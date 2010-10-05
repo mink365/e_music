@@ -3,7 +3,7 @@
 
 int emusic_slider_creat(Em_Smart_Data *em);
 
-void emusic_slider_update(Evas_Object *obj, int duration, int playtime);
+void emusic_slider_update(int duration, int playtime);
 //<------
 //emusic_playback_seek
 

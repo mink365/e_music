@@ -14,8 +14,8 @@ emusic_album_cover_path(const char *picture_front)
 	return_value = xmmsc_result_get_value (res);
 	char *tmp_buf = _on_cover_retrieve(return_value, picture_front);
 
-	xmmsv_unref (return_value);
-//	xmmsc_result_unref (res);
+	//xmmsv_unref (return_value);
+	xmmsc_result_unref (res);
 
 	return tmp_buf;
 }

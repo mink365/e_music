@@ -4,6 +4,8 @@
 
 int emusic_setup_callback(Em_Smart_Data *sd);
 
+int emusic_callback_update(Em_Smart_Data *em);
+
 //<--------------
 //emusic_slider_update
 //emusic_medialib_info_get

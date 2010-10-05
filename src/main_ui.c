@@ -7,56 +7,22 @@
 
 extern Em_Smart_Data  *em;
 
-static const char _EDJE_PART_MEDIAPLAYER[] = "mediaplayer_view";
-static const char _EDJE_PART_PLAYLIST[] = "playlist_view";
-static const char _EDJE_PART_CONFIG_MENU[] = "config_dialog_view";
-static const char _EDJE_PART_NOTIFY[] = "notify_view";
-static const char _EDJE_PART_EVENT_BG[] = "event_bg";
-
-
-	void
-emusic_switch_to_mediaplayer()
-{
-	edje_object_signal_emit(em->edje, "transition,hide,playlist_view", "");
-	edje_object_signal_emit(em->edje, "transition,hide,config_dialog_view", "");
-	edje_object_signal_emit(em->edje, "transition,show,mediaplayer_view", "");
-}
-
-	void
-emusic_switch_to_playlist()
-{
-	edje_object_signal_emit(em->edje, "transition,hide,mediaplayer_view", "");
-	edje_object_signal_emit(em->edje, "transition,show,playlist_view", "");
-}
-
-
-/*  config_dialog */
 static void
-_button_clicked_setting_cb(void *data, Evas_Object *obj, void *event_info)
-{
-	Em_Smart_Data *em = data;
-	
-	edje_object_signal_emit(em->edje, "transition,hide,mediaplayer_view", "");
-	edje_object_signal_emit(em->edje, "transition,show,config_dialog_view", "");
-}
-
-//-------------------------------------------------------------------------------
-	static void
 _win_del(void *data, Evas_Object *obj, void *event_info)
 {
 	elm_exit();
 }
 
-
 /*
 	Win
 */
-	int
+int
 creat_win(Em_Smart_Data *em)
 {
-	Evas_Object *obj;
+	Evas_Object *obj, *win;
 
 	win = elm_win_add(NULL, "e_music", ELM_WIN_BASIC);
+	em->win = win;
 	em->evas = evas_object_evas_get(win);
 
 	em->layout = elm_layout_add(win);
@@ -82,36 +48,30 @@ creat_win(Em_Smart_Data *em)
 		return 0;
 	}
 
-	if (emusic_play_menu_creat(em)) {
-		elm_layout_content_set(em->layout, _EDJE_PART_MEDIAPLAYER, em->mediaplayer);
-	}
-	else {
-		ERR("could not create main menu.\n");
-	}
+	Evas_Object *pg = elm_pager_add(win);
+	em->pager = pg;
+	elm_layout_content_set(em->layout, "pager", pg);
+	elm_object_style_set(pg, "slide_invisible");
+	evas_object_show(pg);
 
-	if (emusic_playlist_view_creat(em)) {
-		elm_layout_content_set(em->layout, _EDJE_PART_PLAYLIST, em->playlist_view.obj);
+
+	if (emusic_playlist_toolbar_creat(em)) {
+		elm_pager_content_push(pg, em->playlist_view);
 	}
 	else {
 		ERR("could not create playlist dialog.\n");
 	}
 
-	if (emusic_config_dialog_creat(em)) {
-		elm_layout_content_set(em->layout, _EDJE_PART_CONFIG_MENU, em->config_dialog.obj);
-	}
-	else {
-		ERR("could not create configure dialog.\n");
-	}
-
-	if (emusic_notify_creat(em)) {
-		edje_object_part_swallow(em->edje, _EDJE_PART_NOTIFY, em->notify.notify);
+	Evas_Object *notify = emusic_notify_creat(em);
+	if (notify) {
+		//edje_object_part_swallow(em->edje, _EDJE_PART_NOTIFY, notify);
 	}
 	else {
 		ERR("could not create notify.\n");
 	}
 
 	if (emusic_event_bg_creat(em)) {
-		edje_object_part_swallow(em->edje, _EDJE_PART_EVENT_BG, em->event_bg.obj);
+		edje_object_part_swallow(em->edje, "event_bg", em->event_bg);
 	}
 	else {
 		ERR("could not create event bg.\n");
@@ -128,10 +88,21 @@ creat_win(Em_Smart_Data *em)
 /*
 	Main_Menu
 */
-	int 
+static void
+_button_clicked_setting_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	Em_Smart_Data *em = data;
+	
+	if (emusic_config_dialog_creat(em)) {
+		elm_pager_content_push(em->pager, em->config_dialog);
+	}
+	else
+		ERR("could not create configure dialog.");
+}
+
+int 
 emusic_play_menu_creat(Em_Smart_Data *em)
 {
-	//   	Evas_Object *win;
 	Evas_Object *mediaplayer, *ic, *btn;
 	
   	mediaplayer = edje_object_add(em->evas);
@@ -162,39 +133,42 @@ emusic_play_menu_creat(Em_Smart_Data *em)
 	evas_object_show(ic);
 	
 	if (emusic_playlist_ctl_creat(em)) {
-		edje_object_part_swallow(mediaplayer, "playlist_ctl.swallow", em->playlist_ctl.obj);
+		edje_object_part_swallow(mediaplayer, "playlist_ctl.swallow", em->playlist_ctl);
 	}
 	else {
 		ERR("could not create playlist_ctl widget.\n");
 	}
 
 	if (emusic_info_creat(em)) {
-		edje_object_part_swallow(mediaplayer, "songs_ifo.swallow", em->info.obj);
+		edje_object_part_swallow(mediaplayer, "songs_ifo.swallow", em->info);
 	}
 	else {
 		ERR("could not create info widget.\n");
 	}
 
 	if (emusic_cover_art_creat(em)) {
-		edje_object_part_swallow(mediaplayer, "cover_art.swallow", em->cover_art.obj);
+		edje_object_part_swallow(mediaplayer, "cover_art.swallow", em->cover_art);
 	}
 	else {
 		ERR("could not create cover_art widget.\n");
 	}
 
 	if (emusic_play_ctl_creat(em)) {
-		edje_object_part_swallow(mediaplayer, "play_ctl.swallow", em->play_ctl.obj);
+		edje_object_part_swallow(mediaplayer, "play_ctl.swallow", em->play_ctl);
 	}
 	else {
 		ERR("could not create play_ctl widget.\n");
 	}
 
 	if (emusic_slider_creat(em)) {
-		edje_object_part_swallow(mediaplayer, "slider.swallow", em->slider.obj);
+		edje_object_part_swallow(mediaplayer, "slider.swallow", em->slider);
 	}
 	else {
 		ERR("could not create slider widget.\n");
 	}
 
-	return 1;
+	/* call the backend-callback to update information */
+	emusic_callback_update(em);
+
+	return TRUE;
 }

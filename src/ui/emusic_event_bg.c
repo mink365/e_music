@@ -2,6 +2,15 @@
 #include <emusic.h>
 #include "emusic_event_bg.h"
 
+typedef struct _Smart_Data
+{
+  	int    mouse_act;
+  	int    mouse_x;
+  	int    mouse_y;
+  	int    mouse_button;
+} Smart_Data;
+static Smart_Data *sd;
+
 static void _bg_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _bg_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _bg_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -17,6 +26,9 @@ emusic_event_bg_creat(Em_Smart_Data *em)
 {
 	Evas_Object *obj;
 
+	sd = calloc(1, sizeof(Smart_Data));
+	if (!sd) return FALSE;
+
 	obj = edje_object_add(em->evas);
 	if (!edje_object_file_set(obj, emusic_config_theme_get(), "main/event_bg"))
 	{
@@ -27,13 +39,13 @@ emusic_event_bg_creat(Em_Smart_Data *em)
     	evas_object_del(obj);
     	return NULL;
 	}
-	em->event_bg.obj = obj;
+	em->event_bg = obj;
 
-	evas_object_event_callback_add(em->event_bg.obj, EVAS_CALLBACK_MOUSE_MOVE,
+	evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
 				  _bg_cb_mouse_move, em);
-   	evas_object_event_callback_add(em->event_bg.obj, EVAS_CALLBACK_MOUSE_DOWN,
+   	evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_DOWN,
 				  _bg_cb_mouse_down, em);
-   	evas_object_event_callback_add(em->event_bg.obj, EVAS_CALLBACK_MOUSE_UP,
+   	evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_UP,
 				  _bg_cb_mouse_up, em);
 
 	return 1;
@@ -45,10 +57,10 @@ _bg_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_Down *ev = event_info;
 
-   em->event_bg.mouse_act = 1;
-   em->event_bg.mouse_button = ev->button;
-   em->event_bg.mouse_x = ev->canvas.x;
-   em->event_bg.mouse_y = ev->canvas.y;
+   sd->mouse_act = 1;
+   sd->mouse_button = ev->button;
+   sd->mouse_x = ev->canvas.x;
+   sd->mouse_y = ev->canvas.y;
 }
 
 static void
@@ -56,9 +68,9 @@ _bg_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_Up *ev = event_info;
 
-   em->event_bg.mouse_x = 0;
-   em->event_bg.mouse_y = 0;
-   em->event_bg.mouse_button = 0;
+   sd->mouse_x = 0;
+   sd->mouse_y = 0;
+   sd->mouse_button = 0;
 }
 
 static void
@@ -67,44 +79,45 @@ _bg_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Evas_Event_Mouse_Move *ev = event_info;
    int diff_y, diff_x;
 
-   if (!em->event_bg.mouse_x)
+   if (!sd->mouse_x)
      goto end;
 
-   diff_x = abs(ev->cur.canvas.x - em->event_bg.mouse_x);
-   diff_y = abs(ev->cur.canvas.y - em->event_bg.mouse_y);
+   diff_x = abs(ev->cur.canvas.x - sd->mouse_x);
+   diff_y = abs(ev->cur.canvas.y - sd->mouse_y);
 
    if (diff_y > 15 + (diff_x/2))
      {
-	//edje_object_signal_emit(em->event_bg.view->bg, "e,action,hide,into", "e");
-	//edje_object_signal_emit(em->event_bg.view->bg, "e,action,hide,back", "e");
+	//edje_object_signal_emit(sd->view->bg, "e,action,hide,into", "e");
+	//edje_object_signal_emit(sd->view->bg, "e,action,hide,back", "e");
 	goto end;
      }
 
-   if (em->event_bg.mouse_button == 1)
+   if (sd->mouse_button == 1)
      {
-	if (ev->cur.canvas.x - em->event_bg.mouse_x > 320) ////////////
+	if (ev->cur.canvas.x - sd->mouse_x > 320) ////////////
 	  {
-	     em->event_bg.mouse_x = 0;
-	     em->event_bg.mouse_y = 0;
+	     sd->mouse_x = 0;
+	     sd->mouse_y = 0;
+         //FIXME:global switch ....
+	     //if (sel->states->next)
+	     //  evry_browse_back(sel);
+		 INF("Switch Back.....");
+		//emusic_switch_to_mediaplayer();
+		elm_pager_content_pop(em->pager);
+	  }
+	if (ev->cur.canvas.x - sd->mouse_x < -320) ////////////
+	  {
+	     sd->mouse_x = 0;
+	     sd->mouse_y = 0;
          //FIXME:global switch ....
 	     //if (sel->states->next)
 	     //  evry_browse_back(sel);
 		 INF("Switch Next.....");
 	  }
-	if (ev->cur.canvas.x - em->event_bg.mouse_x < -320) ////////////
-	  {
-	     em->event_bg.mouse_x = 0;
-	     em->event_bg.mouse_y = 0;
-         //FIXME:global switch ....
-	     //if (sel->states->next)
-	     //  evry_browse_back(sel);
-		 INF("Switch Back.....");
-		 emusic_switch_to_mediaplayer();
-	  }
      }
    return;
 
  end:
-   em->event_bg.mouse_x = 0;
-   em->event_bg.mouse_y = 0;
+   sd->mouse_x = 0;
+   sd->mouse_y = 0;
 }

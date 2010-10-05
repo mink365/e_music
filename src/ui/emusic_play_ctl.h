@@ -3,6 +3,8 @@
 
 int emusic_play_ctl_creat(Em_Smart_Data *em);
 
+int emusic_play_ctl_update(int mode);
+
 //single
 //emusic_playback_prev; emusic_playback_play; emusic_playback_pause; emusic_playback_next
 

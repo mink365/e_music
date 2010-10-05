@@ -11,6 +11,7 @@ emusic_DATA = emusic.edj
 
 emusic.edj: 
 	$(EDJE_CC) \
+	-id $(top_srcdir)/data/themes/images/elm \
 	$(top_srcdir)/data/themes/emusic.edc \
 	$(top_builddir)/data/themes/emusic.edj
 

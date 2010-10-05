@@ -4,9 +4,7 @@
 #include "backend/backend.h"
 #include "emusic_config.h"
 
-Em_Smart_Data  *em;
-
-//int _log_dom = -1;
+extern Em_Smart_Data  *em;
 
 /* Functions */
 	int
@@ -18,7 +16,7 @@ elm_main()
 		return 0;		
 	}
 
-	if (!emusic_setup_callback(em))
+	if (!emusic_callback_setup(em))
 	{
 		ERR("Could not creat callback.\n");
 		return 0;
@@ -31,7 +29,7 @@ elm_main()
 	int
 main(int argc, char **argv)
 {
-	em = E_MUSIC_NEW(Em_Smart_Data, 1);
+	em = E_MUSIC_NEW(Em_Smart_Data);
 
 
 	/*     Init  Local     */
