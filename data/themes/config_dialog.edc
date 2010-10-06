@@ -3,7 +3,7 @@ group {
 	name: "main/config_dialog_view";
 
 	images {
-	   	image: "images/grill_dark_small_pattern.png" COMP;
+	   	image: "images/grill_dark_tiny_pattern.png" COMP;
 		image: "images/vgrad_vdark.png" COMP;
 	}
 
@@ -49,7 +49,7 @@ group {
             clip_to: "master_clipper";
             description {
             	state: "default" 0.0;
-               	image.normal: "images/grill_dark_small_pattern.png";
+               	image.normal: "images/grill_dark_tiny_pattern.png";
 				fill {
 					size {
 		    	 		relative: 0 0;

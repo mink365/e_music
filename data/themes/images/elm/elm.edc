@@ -1273,7 +1273,7 @@ group { name: "elm/button/base/mediaplayer";
        images {
            image: "frame_1.png" COMP;
            image: "frame_2.png" COMP;
-           image: "vgrad_vdark.png" COMP;
+           image: "grill_dark_tiny_pattern.png" COMP;
        }
        parts {
            part { 
@@ -1285,7 +1285,23 @@ group { name: "elm/button/base/mediaplayer";
                 	color: 0 0 0 255;
                	}
            }
-           part { 
+			part {
+            	name: "background_img";
+            	type: IMAGE;
+           		mouse_events: 0;
+            	description {
+            		state: "default" 0.0;
+               		image.normal: "grill_dark_tiny_pattern.png";
+					fill {
+		  				smooth: 0;
+						size {
+		    		 		relative: 0 0;
+		     				offset: 144 144;
+		  				}
+					}
+				}
+         	}
+           part {
 			   	name: "elm.swallow.bg";
 				type: SWALLOW;
                	mouse_events:  0;
@@ -1345,5 +1361,214 @@ group { name: "elm/button/base/mediaplayer";
                }
            }
        }
+   }
+
+
+
+////////////////////slider
+   group { name: "elm/slider/horizontal/default";
+      images {
+	 	image: "sl_bg.png" COMP;
+	 	image: "sl_bg_over.png" COMP;
+	 	image: "sl_bt_0.png" COMP;
+	 	image: "sl_bt_1.png" COMP;
+	 	image: "sl_bt_2.png" COMP;
+      }
+      parts {
+         part { name: "base";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               max: 99999 6;
+               min: 0 6;
+               rel1 { to: "bg";
+                  offset: 1 0;
+               }
+               rel2 { to: "bg";
+                  offset: -2 -1;
+               }
+               image.normal: "sl_bg.png";
+               fill.smooth: 0;
+            }
+         }
+         part { name: "level";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1.to: "base";
+               rel2 {
+                  to_y: "base";
+                  to_x: "elm.dragable.slider";
+                  relative: 0.5 1.0;
+               }
+               color: 255 0 0 200;
+            }
+            description { state: "inverted" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "level2";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               visible: 0;
+               rel1 {
+                  to_y: "base";
+                  to_x: "elm.dragable.slider";
+                  relative: 0.5 0.0;
+               }
+               rel2.to: "base";
+               color: 255 0 0 200;
+            }
+            description { state: "inverted" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part {
+            name: "base_over";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1.to: "base";
+               rel1.offset: -1 -1;
+               rel2.to: "base";
+               rel2.offset: 0 0;
+               image {
+                  normal: "sl_bg_over.png";
+                  border: 3 3 3 3;
+               }
+               fill.smooth: 0;
+            }
+         }
+         part { name: "bg";
+	    type: RECT;
+	    mouse_events: 0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+               visible: 0;
+	       rel1.to: "elm.swallow.bar";
+	       rel2.to: "elm.swallow.bar";
+	       color: 0 0 0 0;
+	    }
+	 }
+		//swallow the slider??
+	 part { name: "elm.swallow.bar";
+	    type: SWALLOW;
+            scale: 1;
+	    description { state: "default" 0.0;
+	       min: 48 24;
+	       max: 99999 24;
+	       align: 1.0 0.5;
+	       rel1 {
+                  relative: 0.0 0.0;
+                  offset: 8 0;
+               }
+	       rel2 {
+                  relative: 1.0 1.0;
+                  offset: -10 -1;
+               }
+	    }
+	 }
+         part { name: "elm.dragable.slider";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            dragable {
+               x: 1 1 0;
+               y: 0 0 0;
+               confine: "bg";
+            }
+            description { state: "default" 0.0;
+               min: 0 24;
+               max: 0 24;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.5 0.0;
+                  to_x: "bg";
+               }
+               rel2 {
+                  relative: 0.5 1.0;
+                  to_x: "bg";
+               }
+               color: 255 0 0 100;
+            }
+         }
+         part { name: "button_events";
+	    type: RECT;
+ 	    dragable {
+	       events: "elm.dragable.slider";
+	    }
+            mouse_events: 1;
+	    description { state: "default" 0.0;
+               fixed: 1 1;
+               min: 16 16;
+               aspect: 1.0 1.0;
+               aspect_preference: VERTICAL;
+	       rel1.to_x: "elm.dragable.slider";
+	       rel2.to_x: "elm.dragable.slider";
+	       color: 0 0 0 0;
+	    }
+	 }
+         part { name: "button0";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               max: 17 999;
+               min: 17 24;
+               rel1.to: "elm.dragable.slider";
+               rel2.to: "elm.dragable.slider";
+               image {
+                  normal: "sl_bt_0.png";
+                  border: 5 5 5 10;
+               }
+               fill.smooth: 0;
+            }
+         }
+         part { name: "button1";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1.to: "button0";
+               rel2 {
+                  to: "button0";
+                  relative: 1.0 0.5;
+                  offset: -1 -5;
+               }
+               image {
+                  normal: "sl_bt_1.png";
+                  border: 5 5 5 0;
+               }
+            }
+         }
+         part { name: "button2";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1.to: "button0";
+               rel2.to: "button0";
+               image {
+                  normal: "sl_bt_2.png";
+                  border: 5 5 5 10;
+               }
+               fill.smooth: 0;
+            }
+         }
+	  }
+      programs {
+	 	program { name: "invert_on";
+	    	signal: "elm,state,inverted,on";
+	    	source: "elm";
+	    	action:  STATE_SET "inverted" 0.0;
+	    	target: "level";
+	    	target: "level2";
+	 	}
+	 	program { name: "invert_off";
+	    	signal: "elm,state,inverted,off";
+	    	source: "elm";
+	    	action:  STATE_SET "default" 0.0;
+	    	target: "level";
+	    	target: "level2";
+	 	}
+	}
    }
 
